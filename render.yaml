@@ -1,0 +1,23 @@
+# render.yaml - Configuración para deployment en Render
+
+services:
+  # Web Service
+  - type: web
+    name: papeleria-sistema
+    runtime: node
+    plan: free
+    buildCommand: npm install && npm rebuild sqlite3
+    startCommand: npm start
+    healthCheckPath: /
+    envVars:
+      - key: NODE_ENV
+        value: production
+      - key: PORT
+        value: 10000
+
+databases:
+  # PostgreSQL Database (opcional - para producción robusta)
+  - name: papeleria-db
+    databaseName: papeleria
+    user: papeleria_user
+    plan: free
