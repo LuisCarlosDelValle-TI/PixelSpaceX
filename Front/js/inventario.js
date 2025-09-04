@@ -2,6 +2,19 @@
 
 console.log('Script inventario.js cargado');
 
+// Configuración del API - Detectar automáticamente el entorno
+function getApiBaseUrl() {
+    // Si estamos en localhost, usar localhost:3001
+    if (window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1') {
+        return 'http://localhost:3001/api';
+    }
+    // Si estamos en producción, usar la URL actual
+    return `${window.location.protocol}//${window.location.host}/api`;
+}
+
+const API_BASE_URL = getApiBaseUrl();
+console.log('🌐 [INVENTARIO] API Base URL:', API_BASE_URL);
+
 // Función para eliminar producto
 function eliminarProducto(idProducto) {
     console.log('Eliminando producto:', idProducto);
@@ -9,7 +22,7 @@ function eliminarProducto(idProducto) {
         return;
     }
     
-    fetch(`http://localhost:3001/api/productos/${idProducto}`, {
+    fetch(`${API_BASE_URL}/productos/${idProducto}`, {
         method: 'DELETE'
     })
     .then(response => {
@@ -30,7 +43,7 @@ function eliminarProducto(idProducto) {
 function editarProducto(idProducto) {
     console.log('Editando producto:', idProducto);
     
-    fetch(`http://localhost:3001/api/productos/${idProducto}`)
+    fetch(`${API_BASE_URL}/productos/${idProducto}`)
     .then(response => response.json())
     .then(producto => {
         // Llenar el formulario con los datos del producto
@@ -91,7 +104,7 @@ function handleSubmit(event) {
         }
     });
     
-    const url = isEditing ? `http://localhost:3001/api/productos/${editingId}` : 'http://localhost:3001/api/productos';
+    const url = isEditing ? `${API_BASE_URL}/productos/${editingId}` : `${API_BASE_URL}/productos`;
     const method = isEditing ? 'PUT' : 'POST';
     
     fetch(url, {
@@ -138,7 +151,7 @@ function cargarProductos() {
         </tr>
     `;
     
-    fetch('http://localhost:3001/api/productos')
+    fetch(`${API_BASE_URL}/productos`)
     .then(response => response.json())
     .then(data => {
         console.log('Productos recibidos:', data);

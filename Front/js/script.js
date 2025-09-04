@@ -1,6 +1,17 @@
 // Front/js/script.js
 
-//
+// Configuración del API - Detectar automáticamente el entorno
+function getApiBaseUrl() {
+    // Si estamos en localhost, usar localhost:3001
+    if (window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1') {
+        return 'http://localhost:3001/api';
+    }
+    // Si estamos en producción, usar la URL actual
+    return `${window.location.protocol}//${window.location.host}/api`;
+}
+
+const API_BASE_URL = getApiBaseUrl();
+console.log('🌐 [SCRIPT] API Base URL:', API_BASE_URL);
 
 // Sistema de navegación simple
 const SectionManager = {
@@ -105,7 +116,7 @@ async function loadSection(section) {
                     
                     // Método 4: Fetch directo como último recurso
                     console.log('Método 4: Fetch directo para ventas');
-                    fetch('http://localhost:3001/api/productos')
+                    fetch(`${API_BASE_URL}/productos`)
                         .then(response => response.json())
                         .then(data => {
                             console.log('Datos para ventas obtenidos directamente:', data);
@@ -194,7 +205,7 @@ async function loadSection(section) {
                             </tr>
                         `;
                         
-                        const response = await fetch('http://localhost:3001/api/productos');
+                        const response = await fetch(`${API_BASE_URL}/productos`);
                         const data = await response.json();
                         
                         console.log('✅ [SCRIPT] Productos recibidos:', data.data.length, 'productos');

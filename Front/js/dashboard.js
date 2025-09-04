@@ -2,16 +2,25 @@
 
 console.log('=== Dashboard script cargado ===');
 
-// Configuración del API
-const API_BASE_URL = 'http://localhost:3001/api';
-
 // Variables globales para los gráficos
 let monthlySalesChart = null;
 let servicesRevenueChart = null;
 
+// Función fallback para obtener la URL del API
+function getApiBaseUrl() {
+    if (window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1') {
+        return 'http://localhost:3001/api';
+    }
+    return `${window.location.protocol}//${window.location.host}/api`;
+}
+
+// Usar configuración global
+const API_BASE_URL = window.CONFIG ? window.CONFIG.apiBaseUrl : getApiBaseUrl();
+
 // Función para inicializar el dashboard
 async function initializeDashboard() {
     console.log('🔵 [DASHBOARD] Inicializando dashboard...');
+    console.log('🌐 [DASHBOARD] API Base URL:', API_BASE_URL);
     
     try {
         // Cargar todas las estadísticas
