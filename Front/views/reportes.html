@@ -1,0 +1,253 @@
+<div id="reportes-form" class="sale-form">
+    <div class="bg-white rounded-xl p-6 shadow-md hover:shadow-lg transition-shadow duration-300">
+        <!-- Header con título y filtros -->
+        <div class="flex flex-col md:flex-row md:items-center md:justify-between mb-6">
+            <div>
+                <h2 class="text-2xl font-bold text-gray-800 flex items-center">
+                    <i class="fas fa-chart-line text-blue-500 mr-3"></i>
+                    Reportes y Estadísticas
+                </h2>
+                <p class="text-gray-600 text-sm mt-1">Visualiza y analiza el rendimiento de tu negocio</p>
+            </div>
+            <div class="mt-4 md:mt-0">
+                <div class="flex space-x-2">
+                    <select id="rango-fechas" class="border rounded-lg px-4 py-2 focus:ring-2 focus:ring-blue-500 focus:border-blue-500 text-sm">
+                        <option>Hoy</option>
+                        <option>Esta semana</option>
+                        <option>Este mes</option>
+                        <option>Este año</option>
+                        <option>Personalizado</option>
+                    </select>
+                    <button class="bg-blue-500 hover:bg-blue-600 text-white px-4 py-2 rounded-lg text-sm font-medium transition-colors duration-300 flex items-center">
+                        <i class="fas fa-download mr-2"></i> Exportar
+                    </button>
+                </div>
+            </div>
+        </div>
+
+        <!-- Tarjetas de resumen -->
+        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4 mb-6">
+            <!-- Ventas Totales -->
+            <div class="bg-gradient-to-r from-blue-50 to-indigo-50 p-4 rounded-xl border border-blue-100">
+                <div class="flex items-center justify-between">
+                    <div>
+                        <p class="text-sm text-gray-500">Ventas Totales</p>
+                        <p class="text-2xl font-bold text-gray-800">$24,580.50</p>
+                        <p class="text-xs text-green-500 mt-1"><i class="fas fa-arrow-up mr-1"></i> 12.5% vs período anterior</p>
+                    </div>
+                    <div class="p-3 rounded-lg bg-blue-100 text-blue-600">
+                        <i class="fas fa-shopping-cart text-xl"></i>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Productos Vendidos -->
+            <div class="bg-gradient-to-r from-green-50 to-emerald-50 p-4 rounded-xl border border-green-100">
+                <div class="flex items-center justify-between">
+                    <div>
+                        <p class="text-sm text-gray-500">Productos Vendidos</p>
+                        <p class="text-2xl font-bold text-gray-800">1,248</p>
+                        <p class="text-xs text-green-500 mt-1"><i class="fas fa-arrow-up mr-1"></i> 8.2% vs período anterior</p>
+                    </div>
+                    <div class="p-3 rounded-lg bg-green-100 text-green-600">
+                        <i class="fas fa-boxes text-xl"></i>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Clientes Nuevos -->
+            <div class="bg-gradient-to-r from-purple-50 to-violet-50 p-4 rounded-xl border border-purple-100">
+                <div class="flex items-center justify-between">
+                    <div>
+                        <p class="text-sm text-gray-500">Clientes Nuevos</p>
+                        <p class="text-2xl font-bold text-gray-800">84</p>
+                        <p class="text-xs text-red-500 mt-1"><i class="fas fa-arrow-down mr-1"></i> 3.5% vs período anterior</p>
+                    </div>
+                    <div class="p-3 rounded-lg bg-purple-100 text-purple-600">
+                        <i class="fas fa-user-plus text-xl"></i>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Ticket Promedio -->
+            <div class="bg-gradient-to-r from-amber-50 to-orange-50 p-4 rounded-xl border border-amber-100">
+                <div class="flex items-center justify-between">
+                    <div>
+                        <p class="text-sm text-gray-500">Ticket Promedio</p>
+                        <p class="text-2xl font-bold text-gray-800">$245.50</p>
+                        <p class="text-xs text-green-500 mt-1"><i class="fas fa-arrow-up mr-1"></i> 5.2% vs período anterior</p>
+                    </div>
+                    <div class="p-3 rounded-lg bg-amber-100 text-amber-600">
+                        <i class="fas fa-receipt text-xl"></i>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Gráficos -->
+        <div class="grid grid-cols-1 lg:grid-cols-2 gap-6 mb-6">
+            <!-- Gráfico de Ventas -->
+            <div class="bg-white p-4 rounded-xl border border-gray-200">
+                <div class="flex justify-between items-center mb-4">
+                    <h3 class="font-medium text-gray-700">Ventas por Día</h3>
+                    <select class="border rounded-lg px-3 py-1 text-sm focus:ring-2 focus:ring-blue-500 focus:border-blue-500">
+                        <option>Últimos 7 días</option>
+                        <option>Últimos 30 días</option>
+                        <option>Últimos 90 días</option>
+                    </select>
+                </div>
+                <div class="h-64 bg-gray-50 rounded-lg flex items-center justify-center">
+                    <p class="text-gray-400">Gráfico de ventas se mostrará aquí</p>
+                    <!-- Aquí iría el gráfico con Chart.js o similar -->
+                </div>
+            </div>
+
+            <!-- Productos más vendidos -->
+            <div class="bg-white p-4 rounded-xl border border-gray-200">
+                <h3 class="font-medium text-gray-700 mb-4">Productos Más Vendidos</h3>
+                <div class="space-y-3">
+                    <!-- Producto 1 -->
+                    <div>
+                        <div class="flex justify-between text-sm mb-1">
+                            <span class="font-medium">Cuaderno Profesional</span>
+                            <span>128 ventas</span>
+                        </div>
+                        <div class="w-full bg-gray-200 rounded-full h-2">
+                            <div class="bg-blue-500 h-2 rounded-full" style="width: 85%"></div>
+                        </div>
+                    </div>
+                    <!-- Producto 2 -->
+                    <div>
+                        <div class="flex justify-between text-sm mb-1">
+                            <span class="font-medium">Bolígrafo Azul</span>
+                            <span>98 ventas</span>
+                        </div>
+                        <div class="w-full bg-gray-200 rounded-full h-2">
+                            <div class="bg-green-500 h-2 rounded-full" style="width: 65%"></div>
+                        </div>
+                    </div>
+                    <!-- Producto 3 -->
+                    <div>
+                        <div class="flex justify-between text-sm mb-1">
+                            <span class="font-medium">Resma de Papel</span>
+                            <span>75 ventas</span>
+                        </div>
+                        <div class="w-full bg-gray-200 rounded-full h-2">
+                            <div class="bg-yellow-500 h-2 rounded-full" style="width: 50%"></div>
+                        </div>
+                    </div>
+                    <!-- Producto 4 -->
+                    <div>
+                        <div class="flex justify-between text-sm mb-1">
+                            <span class="font-medium">Carpeta Tamaño Carta</span>
+                            <span>62 ventas</span>
+                        </div>
+                        <div class="w-full bg-gray-200 rounded-full h-2">
+                            <div class="bg-red-500 h-2 rounded-full" style="width: 42%"></div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Tabla de Últimas Ventas -->
+        <div class="bg-white rounded-xl border border-gray-200 overflow-hidden">
+            <div class="p-4 border-b border-gray-200">
+                <h3 class="font-medium text-gray-700">Últimas Ventas</h3>
+            </div>
+            <div class="overflow-x-auto">
+                <table class="min-w-full divide-y divide-gray-200">
+                    <thead class="bg-gray-50">
+                        <tr>
+                            <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">ID Venta</th>
+                            <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Fecha</th>
+                            <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Cliente</th>
+                            <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Productos</th>
+                            <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Total</th>
+                            <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Estado</th>
+                        </tr>
+                    </thead>
+                    <tbody class="bg-white divide-y divide-gray-200">
+                        <!-- Venta 1 -->
+                        <tr class="hover:bg-gray-50">
+                            <td class="px-6 py-4 whitespace-nowrap text-sm font-medium text-blue-600">#V-00125</td>
+                            <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">01/08/2025</td>
+                            <td class="px-6 py-4 whitespace-nowrap text-sm font-medium">Juan Pérez</td>
+                            <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">3 productos</td>
+                            <td class="px-6 py-4 whitespace-nowrap text-sm font-medium">$1,245.00</td>
+                            <td class="px-6 py-4 whitespace-nowrap">
+                                <span class="px-2 inline-flex text-xs leading-5 font-semibold rounded-full bg-green-100 text-green-800">
+                                    Completada
+                                </span>
+                            </td>
+                        </tr>
+                        <!-- Venta 2 -->
+                        <tr class="hover:bg-gray-50">
+                            <td class="px-6 py-4 whitespace-nowrap text-sm font-medium text-blue-600">#V-00124</td>
+                            <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">31/07/2025</td>
+                            <td class="px-6 py-4 whitespace-nowrap text-sm font-medium">Empresa ABC</td>
+                            <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">12 productos</td>
+                            <td class="px-6 py-4 whitespace-nowrap text-sm font-medium">$3,780.50</td>
+                            <td class="px-6 py-4 whitespace-nowrap">
+                                <span class="px-2 inline-flex text-xs leading-5 font-semibold rounded-full bg-yellow-100 text-yellow-800">
+                                    Pendiente
+                                </span>
+                            </td>
+                        </tr>
+                        <!-- Venta 3 -->
+                        <tr class="hover:bg-gray-50">
+                            <td class="px-6 py-4 whitespace-nowrap text-sm font-medium text-blue-600">#V-00123</td>
+                            <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">31/07/2025</td>
+                            <td class="px-6 py-4 whitespace-nowrap text-sm font-medium">María González</td>
+                            <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">5 productos</td>
+                            <td class="px-6 py-4 whitespace-nowrap text-sm font-medium">$890.00</td>
+                            <td class="px-6 py-4 whitespace-nowrap">
+                                <span class="px-2 inline-flex text-xs leading-5 font-semibold rounded-full bg-green-100 text-green-800">
+                                    Completada
+                                </span>
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+            <div class="bg-white px-4 py-3 flex items-center justify-between border-t border-gray-200 sm:px-6">
+                <div class="flex-1 flex justify-between sm:hidden">
+                    <a href="#" class="relative inline-flex items-center px-4 py-2 border border-gray-300 text-sm font-medium rounded-md text-gray-700 bg-white hover:bg-gray-50">
+                        Anterior
+                    </a>
+                    <a href="#" class="ml-3 relative inline-flex items-center px-4 py-2 border border-gray-300 text-sm font-medium rounded-md text-gray-700 bg-white hover:bg-gray-50">
+                        Siguiente
+                    </a>
+                </div>
+                <div class="hidden sm:flex-1 sm:flex sm:items-center sm:justify-between">
+                    <div>
+                        <p class="text-sm text-gray-700">
+                            Mostrando <span class="font-medium">1</span> a <span class="font-medium">3</span> de <span class="font-medium">24</span> resultados
+                        </p>
+                    </div>
+                    <div>
+                        <nav class="relative z-0 inline-flex rounded-md shadow-sm -space-x-px" aria-label="Pagination">
+                            <a href="#" class="relative inline-flex items-center px-2 py-2 rounded-l-md border border-gray-300 bg-white text-sm font-medium text-gray-500 hover:bg-gray-50">
+                                <span class="sr-only">Anterior</span>
+                                <i class="fas fa-chevron-left h-5 w-5"></i>
+                            </a>
+                            <a href="#" aria-current="page" class="z-10 bg-blue-50 border-blue-500 text-blue-600 relative inline-flex items-center px-4 py-2 border text-sm font-medium">
+                                1
+                            </a>
+                            <a href="#" class="bg-white border-gray-300 text-gray-500 hover:bg-gray-50 relative inline-flex items-center px-4 py-2 border text-sm font-medium">
+                                2
+                            </a>
+                            <a href="#" class="bg-white border-gray-300 text-gray-500 hover:bg-gray-50 relative inline-flex items-center px-4 py-2 border text-sm font-medium">
+                                3
+                            </a>
+                            <a href="#" class="relative inline-flex items-center px-2 py-2 rounded-r-md border border-gray-300 bg-white text-sm font-medium text-gray-500 hover:bg-gray-50">
+                                <span class="sr-only">Siguiente</span>
+                                <i class="fas fa-chevron-right h-5 w-5"></i>
+                            </a>
+                        </nav>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

@@ -1,0 +1,356 @@
+<div id="inventario-form" class="sale-form">
+    <div class="bg-white rounded-xl p-6 shadow-md hover:shadow-lg transition-shadow duration-300">
+        <!-- Header with title and action buttons -->
+        <div class="flex flex-col md:flex-row md:items-center md:justify-between mb-6">
+            <div>
+                <h2 class="text-2xl font-bold text-gray-800 flex items-center">
+                    <i class="fas fa-boxes text-blue-500 mr-3"></i>
+                    Gestión de Inventario
+                </h2>
+                <p class="text-gray-600 text-sm mt-1">Administra los productos y controla tu inventario</p>
+            </div>
+            <div class="mt-4 md:mt-0 flex space-x-3">
+                <button id="btn-refrescar" class="bg-white border border-gray-300 text-gray-700 px-4 py-2 rounded-lg text-sm font-medium hover:bg-gray-50 transition-colors duration-300 flex items-center"
+                        onclick="if(window.cargarProductos) window.cargarProductos()">
+                    <i class="fas fa-sync-alt mr-2"></i> Actualizar
+                </button>
+                <button id="btn-exportar" class="bg-white border border-gray-300 text-gray-700 px-4 py-2 rounded-lg text-sm font-medium hover:bg-gray-50 transition-colors duration-300 flex items-center">
+                    <i class="fas fa-file-export mr-2"></i> Exportar
+                </button>
+                <button id="btn-nuevo-producto" class="bg-gradient-to-r from-blue-500 to-indigo-600 hover:from-blue-600 hover:to-indigo-700 text-white px-4 py-2 rounded-lg text-sm font-medium transition-colors duration-300 flex items-center"
+                        onclick="document.getElementById('product-modal').style.display='flex'; return false;">
+                    <i class="fas fa-plus mr-2"></i> Nuevo Producto
+                </button>
+            </div>
+        </div>
+
+        <!-- Stats Cards -->
+        <div class="grid grid-cols-1 md:grid-cols-4 gap-4 mb-6">
+            <div class="bg-gradient-to-r from-blue-50 to-indigo-50 p-4 rounded-xl border border-blue-100">
+                <div class="flex items-center">
+                    <div class="p-3 rounded-lg bg-blue-100 text-blue-600 mr-4">
+                        <i class="fas fa-box-open text-xl"></i>
+                    </div>
+                    <div>
+                        <p class="text-sm text-gray-500">Total Productos</p>
+                        <p class="text-2xl font-bold text-gray-800">1,248</p>
+                    </div>
+                </div>
+            </div>
+            <div class="bg-gradient-to-r from-green-50 to-emerald-50 p-4 rounded-xl border border-green-100">
+                <div class="flex items-center">
+                    <div class="p-3 rounded-lg bg-green-100 text-green-600 mr-4">
+                        <i class="fas fa-check-circle text-xl"></i>
+                    </div>
+                    <div>
+                        <p class="text-sm text-gray-500">En Stock</p>
+                        <p class="text-2xl font-bold text-gray-800">856</p>
+                    </div>
+                </div>
+            </div>
+            <div class="bg-gradient-to-r from-yellow-50 to-amber-50 p-4 rounded-xl border border-yellow-100">
+                <div class="flex items-center">
+                    <div class="p-3 rounded-lg bg-yellow-100 text-yellow-600 mr-4">
+                        <i class="fas fa-exclamation-triangle text-xl"></i>
+                    </div>
+                    <div>
+                        <p class="text-sm text-gray-500">Bajo Stock</p>
+                        <p class="text-2xl font-bold text-gray-800">127</p>
+                    </div>
+                </div>
+            </div>
+            <div class="bg-gradient-to-r from-red-50 to-rose-50 p-4 rounded-xl border border-red-100">
+                <div class="flex items-center">
+                    <div class="p-3 rounded-lg bg-red-100 text-red-600 mr-4">
+                        <i class="fas fa-times-circle text-xl"></i>
+                    </div>
+                    <div>
+                        <p class="text-sm text-gray-500">Agotados</p>
+                        <p class="text-2xl font-bold text-gray-800">45</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Filters and Search -->
+        <div class="bg-gray-50 p-4 rounded-xl border border-gray-200 mb-6">
+            <div class="grid grid-cols-1 md:grid-cols-5 gap-4">
+                <div class="md:col-span-2">
+                    <div class="relative">
+                        <input type="text" 
+                               class="w-full pl-10 pr-4 py-2 border rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+                               placeholder="Buscar productos...">
+                        <i class="fas fa-search absolute left-3 top-3 text-gray-400"></i>
+                    </div>
+                </div>
+                <select class="border rounded-lg px-4 py-2 focus:ring-2 focus:ring-blue-500 focus:border-blue-500">
+                    <option>Todas las categorías</option>
+                    <option>Escritura</option>
+                    <option>Escolar</option>
+                    <option>Papel</option>
+                    <option>Impresiones</option>
+                    <option>Fotocopias</option>
+                    <option>Otros</option>
+                </select>
+                <select class="border rounded-lg px-4 py-2 focus:ring-2 focus:ring-blue-500 focus:border-blue-500">
+                    <option>Estado del inventario</option>
+                    <option>En stock</option>
+                    <option>Bajo stock</option>
+                    <option>Agotado</option>
+                </select>
+                <button class="bg-blue-500 hover:bg-blue-600 text-white px-4 py-2 rounded-lg transition-colors duration-300 flex items-center justify-center">
+                    <i class="fas fa-filter mr-2"></i> Filtrar
+                </button>
+            </div>
+        </div>
+
+        <!-- Products Table -->
+        <div class="bg-white rounded-xl border border-gray-200 overflow-hidden">
+            <div class="overflow-x-auto">
+                <table class="min-w-full divide-y divide-gray-200" id="tabla-productos">
+                    <thead class="bg-gray-50">
+                        <tr>
+                            <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Producto</th>
+                            <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Categoría</th>
+                            <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Stock</th>
+                            <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Precio</th>
+                            <th scope="col" class="relative px-6 py-3">
+                                <span class="sr-only">Acciones</span>
+                            </th>
+                        </tr>
+                    </thead>
+                    <tbody class="bg-white divide-y divide-gray-200">
+                        <!-- Los productos se cargarán aquí dinámicamente -->
+                    </tbody>
+                </table>
+            </div>
+            
+            <!-- Pagination -->
+            <div class="bg-white px-4 py-3 flex items-center justify-between border-t border-gray-200 sm:px-6">
+                <div class="flex-1 flex justify-between sm:hidden">
+                    <button class="relative inline-flex items-center px-4 py-2 border border-gray-300 text-sm font-medium rounded-md text-gray-700 bg-white hover:bg-gray-50">
+                        Anterior
+                    </button>
+                    <button class="ml-3 relative inline-flex items-center px-4 py-2 border border-gray-300 text-sm font-medium rounded-md text-gray-700 bg-white hover:bg-gray-50">
+                        Siguiente
+                    </button>
+                </div>
+                <div class="hidden sm:flex-1 sm:flex sm:items-center sm:justify-between">
+                    <div>
+                        <p class="text-sm text-gray-700">
+                            Mostrando <span class="font-medium">1</span> a <span class="font-medium">10</span> de <span class="font-medium">47</span> resultados
+                        </p>
+                    </div>
+                    <div>
+                        <nav class="relative z-0 inline-flex rounded-md shadow-sm -space-x-px" aria-label="Pagination">
+                            <button class="relative inline-flex items-center px-2 py-2 rounded-l-md border border-gray-300 bg-white text-sm font-medium text-gray-500 hover:bg-gray-50">
+                                <span class="sr-only">Anterior</span>
+                                <i class="fas fa-chevron-left h-5 w-5"></i>
+                            </button>
+                            <button aria-current="page" class="z-10 bg-blue-50 border-blue-500 text-blue-600 relative inline-flex items-center px-4 py-2 border text-sm font-medium">
+                                1
+                            </button>
+                            <button class="bg-white border-gray-300 text-gray-500 hover:bg-gray-50 relative inline-flex items-center px-4 py-2 border text-sm font-medium">
+                                2
+                            </button>
+                            <button class="bg-white border-gray-300 text-gray-500 hover:bg-gray-50 relative inline-flex items-center px-4 py-2 border text-sm font-medium">
+                                3
+                            </button>
+                            <button class="relative inline-flex items-center px-2 py-2 rounded-r-md border border-gray-300 bg-white text-sm font-medium text-gray-500 hover:bg-gray-50">
+                                <span class="sr-only">Siguiente</span>
+                                <i class="fas fa-chevron-right h-5 w-5"></i>
+                            </button>
+                        </nav>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Modal de Producto - Versión Simplificada -->
+    <div id="product-modal" style="display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background-color: rgba(0,0,0,0.5); z-index: 1000;" 
+         onclick="if(event.target === this) { this.style.display='none'; if(typeof resetForm === 'function') resetForm(); }">>
+        <div style="background: white; margin: 2rem auto; padding: 1.5rem; border-radius: 0.5rem; max-width: 700px; width: 90%; max-height: 90vh; overflow-y: auto; position: relative;">
+            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 1.5rem; padding-bottom: 1rem; border-bottom: 1px solid #e5e7eb;">
+                <h3 style="font-size: 1.25rem; font-weight: 600; color: #1f2937; display: flex; align-items: center;">
+                    <i class="fas fa-boxes" style="color: #3b82f6; margin-right: 0.5rem;"></i>
+                    Registrar Nuevo Producto
+                </h3>
+                <button type="button" style="color: #6b7280; background: none; border: none; cursor: pointer; font-size: 1.25rem;"
+                        onclick="document.getElementById('product-modal').style.display='none';">
+                    <i class="fas fa-times"></i>
+                </button>
+            </div>
+            
+            <form id="product-form" style="margin-top: 1rem;" onsubmit="handleSubmit(event); return false;">
+                <div style="display: grid; grid-template-columns: 1fr; gap: 1.5rem;">
+                    <!-- Primera fila - Código de barras y Categoría -->
+                    <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 1rem;">
+                        <div>
+                            <label style="display: block; font-size: 0.875rem; font-weight: 500; color: #374151; margin-bottom: 0.5rem;">
+                                Código de Barras <span style="color: #ef4444;">*</span>
+                            </label>
+                            <div style="display: flex;">
+                                <input type="text" id="codigo_barras" name="codigo_barras" required
+                                       style="flex: 1; padding: 0.5rem 0.75rem; border: 1px solid #d1d5db; border-radius: 0.375rem 0 0 0.375rem;"
+                                       placeholder="Código de barras">
+                                <button type="button" onclick="startBarcodeScanner()" 
+                                        style="padding: 0 0.75rem; background: #e5e7eb; border: 1px solid #d1d5db; border-left: none; border-radius: 0 0.375rem 0.375rem 0; cursor: pointer;">
+                                    <i class="fas fa-barcode"></i>
+                                </button>
+                            </div>
+                        </div>
+                        <div>
+                            <label style="display: block; font-size: 0.875rem; font-weight: 500; color: #374151; margin-bottom: 0.5rem;">
+                                Categoría <span style="color: #ef4444;">*</span>
+                            </label>
+                            <select id="categoria" name="categoria" required
+                                    style="width: 100%; padding: 0.5rem 0.75rem; border: 1px solid #d1d5db; border-radius: 0.375rem;">
+                                <option value="">Seleccionar categoría</option>
+                                <option value="Escritura">Escritura (Lápices, Lapiceros, Marcadores)</option>
+                                <option value="Escolar">Escolar (Gomas, Sacapuntas, Reglas)</option>
+                                <option value="Papel">Papel (Hojas, Cuadernos, Folders)</option>
+                                <option value="Impresiones">Impresiones (Servicios de Impresión)</option>
+                                <option value="Fotocopias">Fotocopias (Servicios de Fotocopiado)</option>
+                                <option value="Otros">Otros</option>
+                            </select>
+                        </div>
+                    </div>
+
+                    <!-- Segunda fila - Nombre del producto -->
+                    <div>
+                        <label style="display: block; font-size: 0.875rem; font-weight: 500; color: #374151; margin-bottom: 0.5rem;">
+                            Nombre del Producto <span style="color: #ef4444;">*</span>
+                        </label>
+                        <input type="text" id="nombre" name="nombre" required
+                               style="width: 100%; padding: 0.5rem 0.75rem; border: 1px solid #d1d5db; border-radius: 0.375rem;"
+                               placeholder="Ej. Cuaderno profesional">
+                    </div>
+
+                    <!-- Tercera fila - Descripción -->
+                    <div>
+                        <label style="display: block; font-size: 0.875rem; font-weight: 500; color: #374151; margin-bottom: 0.5rem;">
+                            Descripción
+                        </label>
+                        <textarea id="descripcion" name="descripcion"
+                                  style="width: 100%; padding: 0.5rem 0.75rem; border: 1px solid #d1d5db; border-radius: 0.375rem; min-height: 80px;"
+                                  placeholder="Descripción detallada del producto"></textarea>
+                    </div>
+
+                    <!-- Cuarta fila - Precios -->
+                    <div style="display: grid; grid-template-columns: repeat(3, 1fr); gap: 1rem;">
+                        <div>
+                            <label style="display: block; font-size: 0.875rem; font-weight: 500; color: #374151; margin-bottom: 0.5rem;">
+                                Precio de Venta <span style="color: #ef4444;">*</span>
+                            </label>
+                            <div style="position: relative;">
+                                <span style="position: absolute; left: 0.75rem; top: 50%; transform: translateY(-50%); color: #6b7280;">$</span>
+                                <input type="number" id="precio_venta" name="precio_venta" step="0.01" min="0" required
+                                       style="width: 100%; padding: 0.5rem 0.75rem 0.5rem 2rem; border: 1px solid #d1d5db; border-radius: 0.375rem;"
+                                       placeholder="0.00">
+                            </div>
+                        </div>
+                        <div>
+                            <label style="display: block; font-size: 0.875rem; font-weight: 500; color: #374151; margin-bottom: 0.5rem;">
+                                Precio de Mayoreo
+                            </label>
+                            <div style="position: relative;">
+                                <span style="position: absolute; left: 0.75rem; top: 50%; transform: translateY(-50%); color: #6b7280;">$</span>
+                                <input type="number" id="precio_mayoreo" name="precio_mayoreo" step="0.01" min="0"
+                                       style="width: 100%; padding: 0.5rem 0.75rem 0.5rem 2rem; border: 1px solid #d1d5db; border-radius: 0.375rem;"
+                                       placeholder="Opcional">
+                            </div>
+                        </div>
+                        <div>
+                            <label style="display: block; font-size: 0.875rem; font-weight: 500; color: #374151; margin-bottom: 0.5rem;">
+                                Costo Unitario <span style="color: #ef4444;">*</span>
+                            </label>
+                            <div style="position: relative;">
+                                <span style="position: absolute; left: 0.75rem; top: 50%; transform: translateY(-50%); color: #6b7280;">$</span>
+                                <input type="number" id="costo_unitario" name="costo_unitario" step="0.01" min="0" required
+                                       style="width: 100%; padding: 0.5rem 0.75rem 0.5rem 2rem; border: 1px solid #d1d5db; border-radius: 0.375rem;"
+                                       placeholder="0.00">
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Quinta fila - Inventario -->
+                    <div style="display: grid; grid-template-columns: repeat(3, 1fr); gap: 1rem;">
+                        <div>
+                            <label style="display: block; font-size: 0.875rem; font-weight: 500; color: #374151; margin-bottom: 0.5rem;">
+                                Stock Actual <span style="color: #ef4444;">*</span>
+                            </label>
+                            <input type="number" id="stock_actual" name="stock_actual" min="0" required
+                                   style="width: 100%; padding: 0.5rem 0.75rem; border: 1px solid #d1d5db; border-radius: 0.375rem;"
+                                   value="0">
+                        </div>
+                        <div>
+                            <label style="display: block; font-size: 0.875rem; font-weight: 500; color: #374151; margin-bottom: 0.5rem;">
+                                Stock Mínimo
+                            </label>
+                            <input type="number" id="stock_minimo" name="stock_minimo" min="0"
+                                   style="width: 100%; padding: 0.5rem 0.75rem; border: 1px solid #d1d5db; border-radius: 0.375rem;"
+                                   value="5">
+                        </div>
+                        <div>
+                            <label style="display: block; font-size: 0.875rem; font-weight: 500; color: #374151; margin-bottom: 0.5rem;">
+                                Unidad de Medida
+                            </label>
+                            <select id="unidad_medida" name="unidad_medida"
+                                    style="width: 100%; padding: 0.5rem 0.75rem; border: 1px solid #d1d5db; border-radius: 0.375rem;">
+                                <option value="Pieza" selected>Pieza</option>
+                                <option value="Paquete">Paquete</option>
+                                <option value="Caja">Caja</option>
+                                <option value="Pulgada">Pulgada</option>
+                                <option value="Metro">Metro</option>
+                                <option value="Litro">Litro</option>
+                                <option value="Kilogramo">Kilogramo</option>
+                                <option value="Gramo">Gramo</option>
+                            </select>
+                        </div>
+                    </div>
+
+                    <!-- Sexta fila - Información adicional -->
+                    <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 1rem;">
+                        <div>
+                            <label style="display: block; font-size: 0.875rem; font-weight: 500; color: #374151; margin-bottom: 0.5rem;">
+                                Marca
+                            </label>
+                            <input type="text" id="marca" name="marca"
+                                   style="width: 100%; padding: 0.5rem 0.75rem; border: 1px solid #d1d5db; border-radius: 0.375rem;"
+                                   placeholder="Marca del producto">
+                        </div>
+                        <div>
+                            <label style="display: block; font-size: 0.875rem; font-weight: 500; color: #374151; margin-bottom: 0.5rem;">
+                                Modelo
+                            </label>
+                            <input type="text" id="modelo" name="modelo"
+                                   style="width: 100%; padding: 0.5rem 0.75rem; border: 1px solid #d1d5db; border-radius: 0.375rem;"
+                                   placeholder="Modelo del producto">
+                        </div>
+                    </div>
+                    
+                    <!-- Botones -->
+                    <div style="display: flex; justify-content: flex-end; gap: 1rem; margin-top: 1rem; padding-top: 1rem; border-top: 1px solid #e5e5e5;">
+                        <button type="button" 
+                                style="padding: 0.5rem 1rem; border: 1px solid #d1d5db; border-radius: 0.375rem; background: white; color: #374151; cursor: pointer;"
+                                onclick="document.getElementById('product-modal').style.display='none';">
+                            Cancelar
+                        </button>
+                        <button type="button" 
+                                style="padding: 0.5rem 1rem; border-radius: 0.375rem; background: #3b82f6; color: white; border: none; cursor: pointer;"
+                                id="btn-guardar"
+                                onclick="handleSubmit(event)">
+                            Guardar Producto
+                        </button>
+                    </div>
+                </div>
+            </form>
+        </div>
+    </div>
+
+<!-- Scripts -->
+<!-- Include SweetAlert2 -->
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+
+</div>

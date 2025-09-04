@@ -1,0 +1,443 @@
+<!-- Modal para agregar producto -->
+<div id="product-modal" class="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 hidden" aria-hidden="true">
+    <div class="bg-white rounded-xl max-w-2xl w-full max-h-[90vh] overflow-y-auto">
+        <div class="flex justify-between items-center p-6 border-b sticky top-0 bg-white z-10">
+            <h3 class="text-xl font-bold text-gray-800">
+                <i class="fas fa-boxes text-blue-500 mr-2"></i>
+                Registrar Nuevo Producto
+            </h3>
+            <button onclick="hideModal('product-modal')" class="text-gray-500 hover:text-gray-700">
+                <i class="fas fa-times text-xl"></i>
+            </button>
+        </div>
+        
+        <form id="product-form" class="p-6">
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                <!-- Columna Izquierda -->
+                <div class="space-y-4">
+                    <!-- Código de Barras -->
+                    <div>
+                        <label for="barcode" class="block text-sm font-medium text-gray-700 mb-1">
+                            Código de Barras
+                            <span class="text-red-500">*</span>
+                        </label>
+                        <div class="relative">
+                            <input type="text" id="barcode" name="barcode" required
+                                   class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+                                   placeholder="Escanear o ingresar código">
+                            <button type="button" class="absolute right-2 top-2 text-gray-500 hover:text-blue-600" 
+                                    onclick="startBarcodeScanner()"
+                                    title="Escanear código de barras">
+                                <i class="fas fa-barcode"></i>
+                            </button>
+                        </div>
+                    </div>
+
+                    <!-- Nombre del Producto -->
+                    <div>
+                        <label for="name" class="block text-sm font-medium text-gray-700 mb-1">
+                            Nombre del Producto
+                            <span class="text-red-500">*</span>
+                        </label>
+                        <input type="text" id="name" name="name" required
+                               class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+                               placeholder="Ej. Cuaderno profesional">
+                    </div>
+
+                    <!-- Descripción -->
+                    <div>
+                        <label for="description" class="block text-sm font-medium text-gray-700 mb-1">
+                            Descripción
+                        </label>
+                        <textarea id="description" name="description" rows="2"
+                                  class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+                                  placeholder="Descripción detallada del producto"></textarea>
+                    </div>
+
+                    <!-- Categoría -->
+                    <div>
+                        <label for="category" class="block text-sm font-medium text-gray-700 mb-1">
+                            Categoría
+                            <span class="text-red-500">*</span>
+                        </label>
+                        <select id="category" name="category" required
+                                class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500">
+                            <option value="">Seleccionar categoría</option>
+                            <option value="papeleria">Papelería</option>
+                            <option value="escolares">Útiles Escolares</option>
+                            <option value="oficina">Oficina</option>
+                            <option value="electronica">Electrónica</option>
+                            <option value="regalos">Regalos</option>
+                        </select>
+                    </div>
+                </div>
+
+                <!-- Columna Derecha -->
+                <div class="space-y-4">
+                    <!-- Precio de Venta -->
+                    <div>
+                        <label for="price" class="block text-sm font-medium text-gray-700 mb-1">
+                            Precio de Venta
+                            <span class="text-red-500">*</span>
+                        </label>
+                        <div class="relative">
+                            <div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
+                                <span class="text-gray-500">$</span>
+                            </div>
+                            <input type="number" id="price" name="price" min="0.01" step="0.01" required
+                                   class="pl-8 w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+                                   placeholder="0.00">
+                        </div>
+                    </div>
+
+                    <!-- Costo -->
+                    <div>
+                        <label for="cost" class="block text-sm font-medium text-gray-700 mb-1">
+                            Costo
+                            <span class="text-red-500">*</span>
+                        </label>
+                        <div class="relative">
+                            <div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
+                                <span class="text-gray-500">$</span>
+                            </div>
+                            <input type="number" id="cost" name="cost" min="0.01" step="0.01" required
+                                   class="pl-8 w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+                                   placeholder="0.00">
+                        </div>
+                    </div>
+
+                    <!-- Stock Inicial -->
+                    <div>
+                        <label for="stock" class="block text-sm font-medium text-gray-700 mb-1">
+                            Stock Inicial
+                            <span class="text-red-500">*</span>
+                        </label>
+                        <input type="number" id="stock" name="stock" min="0" required
+                               class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+                               placeholder="Cantidad en inventario">
+                    </div>
+
+                    <!-- Stock Mínimo -->
+                    <div>
+                        <label for="min_stock" class="block text-sm font-medium text-gray-700 mb-1">
+                            Stock Mínimo
+                            <span class="text-red-500">*</span>
+                        </label>
+                        <input type="number" id="min_stock" name="min_stock" min="0" required
+                               class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+                               placeholder="Nivel de reorden">
+                    </div>
+
+                    <!-- Unidad de Medida -->
+                    <div>
+                        <label for="unit" class="block text-sm font-medium text-gray-700 mb-1">
+                            Unidad de Medida
+                            <span class="text-red-500">*</span>
+                        </label>
+                        <select id="unit" name="unit" required
+                                class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500">
+                            <option value="pz">Pieza (pz)</option>
+                            <option value="kg">Kilogramo (kg)</option>
+                            <option value="l">Litro (l)</option>
+                            <option value="m">Metro (m)</option>
+                            <option value="paq">Paquete (paq)</option>
+                        </select>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Sección de Imagen -->
+            <div class="mt-6">
+                <label class="block text-sm font-medium text-gray-700 mb-2">
+                    Imagen del Producto
+                </label>
+                <div class="mt-1 flex items-center">
+                    <div class="relative w-32 h-32 bg-gray-100 rounded-lg overflow-hidden border-2 border-dashed border-gray-300 flex items-center justify-center">
+                        <img id="product-image-preview" src="data:image/svg+xml,%3Csvg class='h-12 w-12 text-gray-400' fill='none' viewBox='0 0 24 24' stroke='currentColor'%3E%3Cpath stroke-linecap='round' stroke-linejoin='round' stroke-width='2' d='M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z' /%3E%3C/svg%3E" alt="Vista previa de la imagen" class="h-full w-full object-cover">
+                        <input type="file" id="product-image" name="image" accept="image/*" class="hidden" onchange="previewImage(this)">
+                        <button type="button" onclick="document.getElementById('product-image').click()" class="absolute inset-0 w-full h-full flex items-center justify-center bg-black bg-opacity-50 opacity-0 hover:opacity-100 transition-opacity">
+                            <span class="bg-white p-2 rounded-full">
+                                <i class="fas fa-camera text-gray-700"></i>
+                            </span>
+                        </button>
+                    </div>
+                    <div class="ml-4">
+                        <button type="button" onclick="document.getElementById('product-image').click()" class="bg-white py-2 px-3 border border-gray-300 rounded-md shadow-sm text-sm leading-4 font-medium text-gray-700 hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500">
+                            <i class="fas fa-upload mr-1"></i> Subir imagen
+                        </button>
+                        <p class="text-xs text-gray-500 mt-1">
+                            JPG, PNG o GIF (máx. 2MB)
+                        </p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Notas -->
+            <div class="mt-6">
+                <label for="notes" class="block text-sm font-medium text-gray-700 mb-1">
+                    Notas Adicionales
+                </label>
+                <textarea id="notes" name="notes" rows="2"
+                          class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+                          placeholder="Información adicional sobre el producto"></textarea>
+            </div>
+
+            <!-- Sección de Estado -->
+            <div class="mt-6 pt-6 border-t border-gray-200">
+                <div class="flex items-center">
+                    <input id="active" name="active" type="checkbox" checked
+                           class="h-4 w-4 text-blue-600 focus:ring-blue-500 border-gray-300 rounded">
+                    <label for="active" class="ml-2 block text-sm text-gray-700">
+                        Producto activo (disponible para venta)
+                    </label>
+                </div>
+            </div>
+
+            <!-- Botones de Acción -->
+            <div class="mt-8 flex justify-end space-x-3">
+                <button type="button" onclick="hideModal('product-modal')"
+                        class="px-4 py-2 border border-gray-300 rounded-lg text-sm font-medium text-gray-700 bg-white hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500">
+                    Cancelar
+                </button>
+                <button type="submit"
+                        class="inline-flex items-center px-4 py-2 border border-transparent text-sm font-medium rounded-lg shadow-sm text-white bg-blue-600 hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500">
+                    <i class="fas fa-save mr-2"></i>
+                    Guardar Producto
+                </button>
+            </div>
+        </form>
+    </div>
+</div>
+
+<script>
+// Función para previsualizar la imagen seleccionada
+function previewImage(input) {
+    const preview = document.getElementById('product-image-preview');
+    if (input.files && input.files[0]) {
+        const reader = new FileReader();
+        reader.onload = function(e) {
+            preview.src = e.target.result;
+            preview.classList.remove('h-12', 'w-12');
+            preview.classList.add('h-full', 'w-full', 'object-cover');
+        }
+        reader.readAsDataURL(input.files[0]);
+    }
+}
+
+// Función para simular el escáner de códigos de barras
+function startBarcodeScanner() {
+    // En un entorno real, aquí se integraría con un lector de códigos de barras
+    // Por ahora, simulamos un código de barras aleatorio
+    const barcode = '750' + Math.floor(1000000000000 + Math.random() * 9000000000000).toString().substring(0, 10);
+    document.getElementById('barcode').value = barcode;
+    
+    // Mostrar notificación
+    showNotification('Escaneo simulado. Código de barras generado.', 'info');
+}
+
+// Función para mostrar notificaciones
+function showNotification(message, type = 'info') {
+    // Implementar lógica de notificaciones
+    console.log(`[${type.toUpperCase()}] ${message}`);
+    alert(`[${type.toUpperCase()}] ${message}`);
+}
+
+// Función para limpiar el formulario de producto
+function resetProductForm() {
+    const form = document.getElementById('product-form');
+    if (form) {
+        form.reset();
+        
+        // Restablecer la vista previa de la imagen
+        const preview = document.getElementById('product-image-preview');
+        if (preview) {
+            preview.src = "data:image/svg+xml,%3Csvg class='h-12 w-12 text-gray-400' fill='none' viewBox='0 0 24 24' stroke='currentColor'%3E%3Cpath stroke-linecap='round' stroke-linejoin='round' stroke-width='2' d='M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z' /%3E%3C/svg%3E";
+            preview.classList.remove('h-full', 'w-full', 'object-cover');
+            preview.classList.add('h-12', 'w-12');
+        }
+        
+        // Restablecer el botón de envío
+        const submitButton = form.querySelector('button[type="submit"]');
+        if (submitButton) {
+            submitButton.innerHTML = '<i class="fas fa-save mr-2"></i> Guardar Producto';
+            submitButton.classList.remove('bg-yellow-600', 'hover:bg-yellow-700');
+            submitButton.classList.add('bg-blue-600', 'hover:bg-blue-700');
+        }
+        
+        // Restablecer el título del modal
+        const modalTitle = document.querySelector('#product-modal h3');
+        if (modalTitle) {
+            modalTitle.innerHTML = `
+                <i class="fas fa-boxes text-blue-500 mr-2"></i>
+                Registrar Nuevo Producto
+            `;
+        }
+        
+        // Eliminar el campo oculto de ID si existe
+        const idInput = form.querySelector('input[name="id_producto"]');
+        if (idInput) {
+            idInput.remove();
+        }
+    }
+}
+
+// Inicialización del formulario cuando el DOM esté listo
+document.addEventListener('DOMContentLoaded', function() {
+    const form = document.getElementById('product-form');
+    if (form) {
+        form.addEventListener('submit', handleProductSubmit);
+    }
+});
+
+// Manejar el envío del formulario (crear o actualizar)
+async function handleProductSubmit(e) {
+    e.preventDefault();
+    
+    // Validar el formulario
+    if (!validateProductForm()) {
+        return;
+    }
+    
+    // Mostrar indicador de carga
+    const submitButton = e.target.querySelector('button[type="submit"]');
+    const originalButtonText = submitButton.innerHTML;
+    submitButton.disabled = true;
+    submitButton.innerHTML = '<i class="fas fa-spinner fa-spin mr-2"></i> Procesando...';
+    
+    try {
+        // Obtener los datos del formulario
+        const formData = new FormData(e.target);
+        
+        // Convertir a objeto para manipulación
+        const productData = {
+            nombre: formData.get('name'),
+            descripcion: formData.get('description') || null,
+            codigo_barras: formData.get('barcode') || null,
+            categoria: formData.get('category'),
+            marca: formData.get('brand') || null,
+            modelo: formData.get('model') || null,
+            precio_venta: parseFloat(formData.get('price')),
+            costo_unitario: parseFloat(formData.get('cost')),
+            precio_mayoreo: formData.get('wholesale_price') ? parseFloat(formData.get('wholesale_price')) : null,
+            stock_actual: parseInt(formData.get('stock')),
+            stock_minimo: parseInt(formData.get('min_stock')),
+            unidad_medida: formData.get('unit'),
+            impuestos: formData.get('tax') ? parseFloat(formData.get('tax')) / 100 : 0.16,
+            notas: formData.get('notes') || null,
+            activo: document.getElementById('active').checked ? 1 : 0
+        };
+        
+        // Determinar si es una actualización o creación
+        const idProducto = formData.get('id_producto');
+        const esActualizacion = Boolean(idProducto);
+        
+        let response;
+        
+        if (esActualizacion) {
+            // Actualizar producto existente
+            console.log('Actualizando producto con ID:', idProducto);
+            response = await fetch(`${window.API_BASE_URL || ''}/api/productos/${idProducto}`, {
+                method: 'PUT',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify(productData)
+            });
+        } else {
+            // Crear nuevo producto
+            console.log('Creando nuevo producto');
+            response = await fetch(`${window.API_BASE_URL || ''}/api/productos`, {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify(productData)
+            });
+        }
+        
+        const result = await response.json();
+        
+        if (!response.ok) {
+            throw new Error(result.error || 'Error al procesar la solicitud');
+        }
+        
+        // Mostrar mensaje de éxito
+        const successMessage = esActualizacion 
+            ? 'Producto actualizado exitosamente' 
+            : 'Producto registrado exitosamente';
+            
+        await Swal.fire({
+            icon: 'success',
+            title: '¡Éxito!',
+            text: successMessage,
+            timer: 2000,
+            showConfirmButton: false
+        });
+        
+        // Cerrar el modal y limpiar el formulario
+        hideModal('product-modal');
+        resetProductForm();
+        
+        // Actualizar la lista de productos
+        if (typeof window.cargarProductos === 'function') {
+            await window.cargarProductos();
+        }
+        
+    } catch (error) {
+        console.error('Error al procesar el producto:', error);
+        
+        // Mostrar mensaje de error con SweetAlert2
+        await Swal.fire({
+            icon: 'error',
+            title: 'Error',
+            text: error.message || 'Ocurrió un error al procesar el producto. Por favor, intente de nuevo.',
+            confirmButtonText: 'Entendido'
+        });
+    } finally {
+        // Restaurar el botón
+        submitButton.disabled = false;
+        submitButton.innerHTML = originalButtonText;
+    }
+}
+
+// Validar el formulario de producto
+function validateProductForm() {
+    const requiredFields = ['barcode', 'name', 'category', 'price', 'cost', 'stock', 'min_stock', 'unit'];
+    let isValid = true;
+    
+    requiredFields.forEach(fieldId => {
+        const field = document.getElementById(fieldId);
+        if (field && !field.value.trim()) {
+            field.classList.add('border-red-500');
+            isValid = false;
+        } else if (field) {
+            field.classList.remove('border-red-500');
+        }
+    });
+    
+    // Validar que el precio sea mayor que el costo
+    const price = parseFloat(document.getElementById('price').value);
+    const cost = parseFloat(document.getElementById('cost').value);
+    
+    if (price <= 0 || cost <= 0) {
+        showNotification('El precio y el costo deben ser mayores a 0', 'error');
+        return false;
+    }
+    
+    if (price < cost) {
+        showNotification('El precio de venta no puede ser menor que el costo', 'error');
+        document.getElementById('price').classList.add('border-red-500');
+        return false;
+    }
+    
+    // Validar que el stock mínimo sea un número positivo
+    const minStock = parseInt(document.getElementById('min_stock').value);
+    if (minStock < 0) {
+        showNotification('El stock mínimo no puede ser negativo', 'error');
+        document.getElementById('min_stock').classList.add('border-red-500');
+        return false;
+    }
+    
+    return isValid;
+}
+</script>

@@ -1,0 +1,236 @@
+<!-- Front/views/dashboard.html -->
+<div>
+    <h2 class="text-2xl font-semibold text-gray-800 mb-6">Panel de Control</h2>
+    
+    <!-- Stats Cards -->
+    <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-6">
+        <!-- Ventas del Día -->
+        <div class="bg-white p-6 rounded-lg shadow hover:shadow-md transition-shadow">
+            <div class="flex items-center justify-between">
+                <div>
+                    <p class="text-gray-500 text-sm">Ventas del Día</p>
+                    <h3 class="text-2xl font-bold">$<span id="daily-sales">24,780</span></h3>
+                    <p class="text-sm" id="sales-change">
+                        <span class="text-green-500">+12%</span> desde ayer
+                    </p>
+                </div>
+                <div class="bg-blue-100 p-3 rounded-full">
+                    <i class="fas fa-cash-register text-blue-500 text-xl"></i>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Tickets Emitidos -->
+        <div class="bg-white p-6 rounded-lg shadow hover:shadow-md transition-shadow">
+            <div class="flex items-center justify-between">
+                <div>
+                    <p class="text-gray-500 text-sm">Tickets Emitidos</p>
+                    <h3 class="text-2xl font-bold" id="tickets-count">124</h3>
+                    <p class="text-sm" id="tickets-change">
+                        <span class="text-green-500">+8%</span> desde ayer
+                    </p>
+                </div>
+                <div class="bg-green-100 p-3 rounded-full">
+                    <i class="fas fa-receipt text-green-500 text-xl"></i>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Ganancias del Día -->
+        <div class="bg-white p-6 rounded-lg shadow hover:shadow-md transition-shadow">
+            <div class="flex items-center justify-between">
+                <div>
+                    <p class="text-gray-500 text-sm">Ganancias del Día</p>
+                    <h3 class="text-2xl font-bold">$<span id="daily-profit">8,240</span></h3>
+                    <p class="text-sm" id="profit-change">
+                        <span class="text-green-500">+15%</span> vs promedio
+                    </p>
+                </div>
+                <div class="bg-purple-100 p-3 rounded-full">
+                    <i class="fas fa-chart-line text-purple-500 text-xl"></i>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Productos por Agotarse -->
+        <div class="bg-white p-6 rounded-lg shadow hover:shadow-md transition-shadow">
+            <div class="flex items-center justify-between">
+                <div>
+                    <p class="text-gray-500 text-sm">Productos por Agotarse</p>
+                    <h3 class="text-2xl font-bold text-red-600" id="low-stock-count">18</h3>
+                    <p class="text-sm">
+                        <span id="critical-items" class="font-medium">5 críticos</span>
+                    </p>
+                </div>
+                <div class="bg-yellow-100 p-3 rounded-full">
+                    <i class="fas fa-exclamation-triangle text-yellow-500 text-xl"></i>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Gráficos -->
+    <div class="grid grid-cols-1 lg:grid-cols-2 gap-6 mb-6">
+        <!-- Gráfico de Ventas del Mes -->
+        <div class="bg-white p-6 rounded-lg shadow">
+            <div class="flex justify-between items-center mb-4">
+                <h3 class="font-semibold text-lg">Ventas del Mes</h3>
+                <div class="flex space-x-2">
+                    <select id="month-selector" class="text-sm border rounded px-2 py-1">
+                        <option value="0">Enero</option>
+                        <option value="1">Febrero</option>
+                        <option value="2">Marzo</option>
+                        <option value="3">Abril</option>
+                        <option value="4">Mayo</option>
+                        <option value="5">Junio</option>
+                        <option value="6">Julio</option>
+                        <option value="7" selected>Agosto</option>
+                        <option value="8">Septiembre</option>
+                        <option value="9">Octubre</option>
+                        <option value="10">Noviembre</option>
+                        <option value="11">Diciembre</option>
+                    </select>
+                    <select id="year-selector" class="text-sm border rounded px-2 py-1">
+                        <option>2024</option>
+                        <option selected>2025</option>
+                        <option>2026</option>
+                    </select>
+                </div>
+            </div>
+            <div class="h-80">
+                <canvas id="monthlySalesChart"></canvas>
+            </div>
+        </div>
+        
+        <!-- Productos Populares -->
+        <div class="bg-white p-6 rounded-lg shadow">
+            <div class="flex justify-between items-center mb-4">
+                <h3 class="font-semibold text-lg">Productos Populares</h3>
+                <select id="popular-products-period" class="text-sm border rounded px-2 py-1">
+                    <option value="week">Esta Semana</option>
+                    <option value="month" selected>Este Mes</option>
+                    <option value="year">Este Año</option>
+                </select>
+            </div>
+            <div id="popular-products-list" class="space-y-3">
+                <div class="text-center py-4 text-gray-400">
+                    <i class="fas fa-spinner fa-spin text-xl mb-2"></i>
+                    <p>Cargando productos populares...</p>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <!-- Sección de Servicios -->
+    <div class="grid grid-cols-1 lg:grid-cols-3 gap-6 mb-6">
+        <!-- Resumen de Servicios -->
+        <div class="bg-white p-6 rounded-lg shadow lg:col-span-3">
+            <div class="flex justify-between items-center mb-4">
+                <h3 class="font-semibold text-lg">Resumen de Servicios</h3>
+                <select id="services-period" class="text-sm border rounded px-2 py-1">
+                    <option value="today">Hoy</option>
+                    <option value="week" selected>Esta Semana</option>
+                    <option value="month">Este Mes</option>
+                </select>
+            </div>
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+                <!-- Tarjeta de Copiado -->
+                <div class="bg-blue-50 p-4 rounded-lg">
+                    <div class="flex justify-between items-start">
+                        <div>
+                            <p class="text-sm text-blue-700 font-medium">Copiado</p>
+                            <h4 class="text-2xl font-bold text-blue-900" id="copies-count">0</h4>
+                            <p class="text-xs text-blue-600"><span id="copies-change">0%</span> vs período anterior</p>
+                        </div>
+                        <div class="bg-blue-100 p-3 rounded-full">
+                            <i class="fas fa-copy text-blue-600"></i>
+                        </div>
+                    </div>
+                    <div class="mt-4">
+                        <p class="text-sm text-gray-600">Ingresos: <span class="font-medium" id="copies-revenue">$0</span></p>
+                        <p class="text-xs text-gray-500">Promedio por copia: <span id="copies-avg">$0.00</span></p>
+                    </div>
+                </div>
+                
+                <!-- Tarjeta de Impresión -->
+                <div class="bg-green-50 p-4 rounded-lg">
+                    <div class="flex justify-between items-start">
+                        <div>
+                            <p class="text-sm text-green-700 font-medium">Impresión</p>
+                            <h4 class="text-2xl font-bold text-green-900" id="prints-count">0</h4>
+                            <p class="text-xs text-green-600"><span id="prints-change">0%</span> vs período anterior</p>
+                        </div>
+                        <div class="bg-green-100 p-3 rounded-full">
+                            <i class="fas fa-print text-green-600"></i>
+                        </div>
+                    </div>
+                    <div class="mt-4">
+                        <p class="text-sm text-gray-600">Ingresos: <span class="font-medium" id="prints-revenue">$0</span></p>
+                        <p class="text-xs text-gray-500">Promedio por impresión: <span id="prints-avg">$0.00</span></p>
+                    </div>
+                </div>
+                
+                <!-- Tarjeta de Recargas -->
+                <div class="bg-purple-50 p-4 rounded-lg">
+                    <div class="flex justify-between items-start">
+                        <div>
+                            <p class="text-sm text-purple-700 font-medium">Recargas</p>
+                            <h4 class="text-2xl font-bold text-purple-900" id="topups-count">0</h4>
+                            <p class="text-xs text-purple-600"><span id="topups-change">0%</span> vs período anterior</p>
+                        </div>
+                        <div class="bg-purple-100 p-3 rounded-full">
+                            <i class="fas fa-mobile-alt text-purple-600"></i>
+                        </div>
+                    </div>
+                    <div class="mt-4">
+                        <p class="text-sm text-gray-600">Ingresos: <span class="font-medium" id="topups-revenue">$0</span></p>
+                        <p class="text-xs text-gray-500">Comisiones: <span id="topups-commissions">$0</span></p>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Gráfico de Ingresos por Servicio -->
+        <div class="bg-white p-6 rounded-lg shadow lg:col-span-2">
+            <h3 class="font-semibold text-lg mb-4">Ingresos por Servicio</h3>
+            <div class="h-80">
+                <canvas id="servicesRevenueChart"></canvas>
+            </div>
+        </div>
+        
+        <!-- Detalle de Comisiones de Recargas -->
+        <div class="bg-white p-6 rounded-lg shadow">
+            <h3 class="font-semibold text-lg mb-4">Comisiones de Recargas</h3>
+            <div class="space-y-4">
+                <div>
+                    <p class="text-sm text-gray-600">Comisión Total</p>
+                    <p class="text-2xl font-bold text-purple-700" id="total-commissions">$0</p>
+                </div>
+                <div class="space-y-2">
+                    <p class="text-sm font-medium">Por Compañía</p>
+                    <div id="company-commissions" class="space-y-2">
+                        <!-- Se llenará dinámicamente -->
+                        <div class="text-center py-4 text-gray-400">
+                            <i class="fas fa-spinner fa-spin text-xl mb-2"></i>
+                            <p class="text-sm">Cargando datos...</p>
+                        </div>
+                    </div>
+                </div>
+                <div class="pt-2 border-t">
+                    <p class="text-xs text-gray-500">Última actualización: <span id="last-updated">Hoy, 00:00</span></p>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <!-- Segunda fila de gráficos -->
+    <div class="grid grid-cols-1 gap-6 mb-6">
+        <!-- Productos por Agotarse -->
+        <div class="bg-white p-6 rounded-lg shadow">
+            <h3 class="font-semibold text-lg mb-4">Productos por Agotarse</h3>
+            <div class="space-y-3" id="low-stock-items">
+                <!-- Contenido dinámico -->
+            </div>
+        </div>
+    </div>
+</div>
