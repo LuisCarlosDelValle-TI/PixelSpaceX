@@ -55,6 +55,11 @@ app.use(bodyParser.urlencoded({ extended: true }));
 // Servir archivos estáticos desde la carpeta Front
 app.use(express.static(path.join(__dirname, 'Front')));
 
+// Ruta principal para servir el archivo standalone
+app.get('/', (req, res) => {
+    res.sendFile(path.join(__dirname, 'Front', 'html', 'index-standalone.html'));
+});
+
 // Rutas de la API
 app.use('/api/productos', productosRoutes);
 app.use('/api/ventas', ventasRoutes);
