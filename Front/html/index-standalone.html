@@ -143,85 +143,389 @@
 
         <!-- Ventas Content (Hidden by default) -->
         <div id="ventas-content" style="display: none;">
-          <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
-            <!-- Products Grid -->
-            <div class="lg:col-span-2">
-              <div class="bg-white rounded-lg shadow">
-                <div class="p-4 border-b">
-                  <h3 class="text-lg font-semibold">Productos</h3>
-                </div>
-                <div class="p-4">
-                  <div id="products-grid" class="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
-                    <!-- Products will be loaded here -->
+          <div class="flex flex-col lg:flex-row gap-6 p-6 bg-gray-50 min-h-screen">
+              <!-- Sección principal de ventas (izquierda) -->
+              <div class="lg:w-2/3">
+                  <!-- Header con título y botón de actualizar -->
+                  <div class="flex justify-between items-center mb-4">
+                      <h1 class="text-2xl font-bold text-gray-800 flex items-center">
+                          <i class="fas fa-cash-register text-green-500 mr-3"></i>
+                          Punto de Venta
+                      </h1>
+                      <button id="btn-actualizar-ventas" 
+                              class="bg-white border border-gray-300 text-gray-700 px-4 py-2 rounded-lg text-sm font-medium hover:bg-gray-50 transition-colors duration-300 flex items-center"
+                              onclick="loadProducts()">
+                          <i class="fas fa-sync-alt mr-2"></i> Actualizar
+                      </button>
                   </div>
-                </div>
-              </div>
-            </div>
 
-            <!-- Cart -->
-            <div class="lg:col-span-1">
-              <div class="bg-white rounded-lg shadow">
-                <div class="p-4 border-b">
-                  <h3 class="text-lg font-semibold">Carrito</h3>
-                </div>
-                <div class="p-4">
-                  <div id="cart-items" class="space-y-2 mb-4">
-                    <div class="text-center text-gray-500 py-8">
-                      <i class="fas fa-shopping-cart text-3xl mb-2"></i>
-                      <p>El carrito está vacío</p>
-                    </div>
+                  <!-- Barra de búsqueda y filtros -->
+                  <div class="bg-white p-6 rounded-xl shadow-sm mb-6">
+                      <div class="flex gap-4">
+                          <div class="flex-1 relative">
+                              <input type="text" id="product-search" 
+                                     placeholder="Buscar productos por nombre o código..." 
+                                     class="w-full px-4 py-3 pl-10 border rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500">
+                              <i class="fas fa-search absolute left-3 top-3.5 text-gray-400"></i>
+                          </div>
+                          <select id="category-filter" class="border rounded-lg px-4 py-2 focus:ring-2 focus:ring-blue-500 focus:border-blue-500">
+                              <option value="">Todas las categorías</option>
+                          </select>
+                      </div>
                   </div>
-                  <div class="border-t pt-4">
-                    <div class="flex justify-between text-sm">
-                      <span>Subtotal:</span>
-                      <span id="subtotal">$0.00</span>
-                    </div>
-                    <div class="flex justify-between text-sm">
-                      <span>IVA (16%):</span>
-                      <span id="iva">$0.00</span>
-                    </div>
-                    <div class="flex justify-between text-lg font-bold border-t mt-2 pt-2">
-                      <span>Total:</span>
-                      <span id="total">$0.00</span>
-                    </div>
-                    <button onclick="completeSale()" class="w-full mt-4 bg-green-500 text-white py-2 px-4 rounded hover:bg-green-600">
-                      Completar Venta
-                    </button>
+
+                  <!-- Lista de productos -->
+                  <div id="products-grid" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+                      <!-- Los productos se cargarán aquí dinámicamente -->
+                      <div class="flex items-center justify-center h-64 bg-white rounded-xl shadow-sm">
+                          <p class="text-gray-400">Cargando productos...</p>
+                      </div>
                   </div>
-                </div>
               </div>
-            </div>
+
+              <!-- Carrito de compras (derecha) -->
+              <div class="lg:w-1/3">
+                  <div class="bg-white rounded-xl shadow-sm p-6 sticky top-6">
+                      <div class="flex justify-between items-center mb-6">
+                          <h2 class="text-lg font-semibold text-gray-800">Ticket de Venta</h2>
+                          <span class="text-sm text-gray-500">#<span id="ticket-number">00001</span></span>
+                      </div>
+                      
+                      <!-- Lista de productos -->
+                      <div id="cart-items" class="space-y-4 mb-6 max-h-96 overflow-y-auto">
+                          <div class="text-center py-8 text-gray-400">
+                              <i class="fas fa-shopping-cart text-3xl mb-2"></i>
+                              <p>El carrito está vacío</p>
+                          </div>
+                      </div>
+
+                      <!-- Resumen del ticket -->
+                      <div class="border-t border-gray-200 pt-4 space-y-3">
+                          <div class="flex justify-between text-sm text-gray-600">
+                              <span>Subtotal:</span>
+                              <span id="subtotal">$0.00</span>
+                          </div>
+                          <div class="flex justify-between text-sm text-gray-600">
+                              <span>IVA (16%):</span>
+                              <span id="iva">$0.00</span>
+                          </div>
+                          <div class="flex justify-between font-semibold text-lg text-gray-800 pt-2 border-t border-gray-200">
+                              <span>Total:</span>
+                              <span id="total">$0.00</span>
+                          </div>
+                      </div>
+
+                      <!-- Botones de acción -->
+                      <div class="mt-6 space-y-3">
+                          <button id="checkout-btn" onclick="completeSale()" class="w-full bg-blue-600 hover:bg-blue-700 text-white py-3 px-4 rounded-lg font-medium transition-colors duration-300 flex items-center justify-center disabled:opacity-50 disabled:cursor-not-allowed" disabled>
+                              <i class="fas fa-credit-card mr-2"></i> Cobrar
+                          </button>
+                          <button id="clear-cart" onclick="clearCart()" class="w-full bg-white border border-gray-300 text-gray-700 py-2 px-4 rounded-lg font-medium hover:bg-gray-50 transition-colors duration-300">
+                              <i class="fas fa-trash-alt mr-2"></i> Limpiar
+                          </button>
+                      </div>
+                  </div>
+              </div>
           </div>
         </div>
 
         <!-- Productos Content (Hidden by default) -->
         <div id="productos-content" style="display: none;">
-          <div class="bg-white rounded-lg shadow">
-            <div class="p-4 border-b">
-              <h3 class="text-lg font-semibold">Gestión de Productos</h3>
-            </div>
-            <div class="p-4">
-              <div class="overflow-x-auto">
-                <table class="min-w-full divide-y divide-gray-200">
-                  <thead class="bg-gray-50">
-                    <tr>
-                      <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Producto</th>
-                      <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Categoría</th>
-                      <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Stock</th>
-                      <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Precio</th>
-                      <th class="px-6 py-3 text-right text-xs font-medium text-gray-500 uppercase tracking-wider">Acciones</th>
-                    </tr>
-                  </thead>
-                  <tbody id="productos-table" class="bg-white divide-y divide-gray-200">
-                    <!-- Products will be loaded here -->
-                  </tbody>
-                </table>
+          <div id="inventario-form" class="sale-form">
+              <div class="bg-white rounded-xl p-6 shadow-md hover:shadow-lg transition-shadow duration-300">
+                  <!-- Header with title and action buttons -->
+                  <div class="flex flex-col md:flex-row md:items-center md:justify-between mb-6">
+                      <div>
+                          <h2 class="text-2xl font-bold text-gray-800 flex items-center">
+                              <i class="fas fa-boxes text-blue-500 mr-3"></i>
+                              Gestión de Inventario
+                          </h2>
+                          <p class="text-gray-600 text-sm mt-1">Administra los productos y controla tu inventario</p>
+                      </div>
+                      <div class="mt-4 md:mt-0 flex space-x-3">
+                          <button id="btn-refrescar" class="bg-white border border-gray-300 text-gray-700 px-4 py-2 rounded-lg text-sm font-medium hover:bg-gray-50 transition-colors duration-300 flex items-center"
+                                  onclick="loadProductsTable()">
+                              <i class="fas fa-sync-alt mr-2"></i> Actualizar
+                          </button>
+                          <button id="btn-exportar" class="bg-white border border-gray-300 text-gray-700 px-4 py-2 rounded-lg text-sm font-medium hover:bg-gray-50 transition-colors duration-300 flex items-center">
+                              <i class="fas fa-file-export mr-2"></i> Exportar
+                          </button>
+                          <button id="btn-nuevo-producto" class="bg-gradient-to-r from-blue-500 to-indigo-600 hover:from-blue-600 hover:to-indigo-700 text-white px-4 py-2 rounded-lg text-sm font-medium transition-colors duration-300 flex items-center"
+                                  onclick="document.getElementById('product-modal').style.display='flex'; return false;">
+                              <i class="fas fa-plus mr-2"></i> Nuevo Producto
+                          </button>
+                      </div>
+                  </div>
+
+                  <!-- Stats Cards -->
+                  <div class="grid grid-cols-1 md:grid-cols-4 gap-4 mb-6">
+                      <div class="bg-gradient-to-r from-blue-50 to-indigo-50 p-4 rounded-xl border border-blue-100">
+                          <div class="flex items-center">
+                              <div class="p-3 rounded-lg bg-blue-100 text-blue-600 mr-4">
+                                  <i class="fas fa-box-open text-xl"></i>
+                              </div>
+                              <div>
+                                  <p class="text-sm text-gray-500">Total Productos</p>
+                                  <p class="text-2xl font-bold text-gray-800" id="total-productos-stat">0</p>
+                              </div>
+                          </div>
+                      </div>
+                      <div class="bg-gradient-to-r from-green-50 to-emerald-50 p-4 rounded-xl border border-green-100">
+                          <div class="flex items-center">
+                              <div class="p-3 rounded-lg bg-green-100 text-green-600 mr-4">
+                                  <i class="fas fa-check-circle text-xl"></i>
+                              </div>
+                              <div>
+                                  <p class="text-sm text-gray-500">En Stock</p>
+                                  <p class="text-2xl font-bold text-gray-800" id="en-stock-stat">0</p>
+                              </div>
+                          </div>
+                      </div>
+                      <div class="bg-gradient-to-r from-yellow-50 to-amber-50 p-4 rounded-xl border border-yellow-100">
+                          <div class="flex items-center">
+                              <div class="p-3 rounded-lg bg-yellow-100 text-yellow-600 mr-4">
+                                  <i class="fas fa-exclamation-triangle text-xl"></i>
+                              </div>
+                              <div>
+                                  <p class="text-sm text-gray-500">Bajo Stock</p>
+                                  <p class="text-2xl font-bold text-gray-800" id="bajo-stock-stat">0</p>
+                              </div>
+                          </div>
+                      </div>
+                      <div class="bg-gradient-to-r from-red-50 to-rose-50 p-4 rounded-xl border border-red-100">
+                          <div class="flex items-center">
+                              <div class="p-3 rounded-lg bg-red-100 text-red-600 mr-4">
+                                  <i class="fas fa-times-circle text-xl"></i>
+                              </div>
+                              <div>
+                                  <p class="text-sm text-gray-500">Agotados</p>
+                                  <p class="text-2xl font-bold text-gray-800" id="agotados-stat">0</p>
+                              </div>
+                          </div>
+                      </div>
+                  </div>
+
+                  <!-- Filters and Search -->
+                  <div class="bg-gray-50 p-4 rounded-xl border border-gray-200 mb-6">
+                      <div class="grid grid-cols-1 md:grid-cols-5 gap-4">
+                          <div class="md:col-span-2">
+                              <div class="relative">
+                                  <input type="text" 
+                                         class="w-full pl-10 pr-4 py-2 border rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+                                         placeholder="Buscar productos...">
+                                  <i class="fas fa-search absolute left-3 top-3 text-gray-400"></i>
+                              </div>
+                          </div>
+                          <select class="border rounded-lg px-4 py-2 focus:ring-2 focus:ring-blue-500 focus:border-blue-500">
+                              <option>Todas las categorías</option>
+                              <option>Escritura</option>
+                              <option>Escolar</option>
+                              <option>Papel</option>
+                              <option>Impresiones</option>
+                              <option>Fotocopias</option>
+                              <option>Otros</option>
+                          </select>
+                          <select class="border rounded-lg px-4 py-2 focus:ring-2 focus:ring-blue-500 focus:border-blue-500">
+                              <option>Estado del inventario</option>
+                              <option>En stock</option>
+                              <option>Bajo stock</option>
+                              <option>Agotado</option>
+                          </select>
+                          <button class="bg-blue-500 hover:bg-blue-600 text-white px-4 py-2 rounded-lg transition-colors duration-300 flex items-center justify-center">
+                              <i class="fas fa-filter mr-2"></i> Filtrar
+                          </button>
+                      </div>
+                  </div>
+
+                  <!-- Products Table -->
+                  <div class="bg-white rounded-xl border border-gray-200 overflow-hidden">
+                      <div class="overflow-x-auto">
+                          <table class="min-w-full divide-y divide-gray-200" id="tabla-productos">
+                              <thead class="bg-gray-50">
+                                  <tr>
+                                      <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Producto</th>
+                                      <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Categoría</th>
+                                      <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Stock</th>
+                                      <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Precio</th>
+                                      <th scope="col" class="relative px-6 py-3">
+                                          <span class="sr-only">Acciones</span>
+                                      </th>
+                                  </tr>
+                              </thead>
+                              <tbody id="productos-table" class="bg-white divide-y divide-gray-200">
+                                  <!-- Los productos se cargarán aquí dinámicamente -->
+                              </tbody>
+                          </table>
+                      </div>
+                      
+                      <!-- Pagination -->
+                      <div class="bg-white px-4 py-3 flex items-center justify-between border-t border-gray-200 sm:px-6">
+                          <div class="flex-1 flex justify-between sm:hidden">
+                              <button class="relative inline-flex items-center px-4 py-2 border border-gray-300 text-sm font-medium rounded-md text-gray-700 bg-white hover:bg-gray-50">
+                                  Anterior
+                              </button>
+                              <button class="ml-3 relative inline-flex items-center px-4 py-2 border border-gray-300 text-sm font-medium rounded-md text-gray-700 bg-white hover:bg-gray-50">
+                                  Siguiente
+                              </button>
+                          </div>
+                          <div class="hidden sm:flex-1 sm:flex sm:items-center sm:justify-between">
+                              <div>
+                                  <p class="text-sm text-gray-700">
+                                      Mostrando <span class="font-medium">1</span> a <span class="font-medium">10</span> de <span class="font-medium" id="total-productos-pagination">0</span> resultados
+                                  </p>
+                              </div>
+                              <div>
+                                  <nav class="relative z-0 inline-flex rounded-md shadow-sm -space-x-px" aria-label="Pagination">
+                                      <button class="relative inline-flex items-center px-2 py-2 rounded-l-md border border-gray-300 bg-white text-sm font-medium text-gray-500 hover:bg-gray-50">
+                                          <span class="sr-only">Anterior</span>
+                                          <i class="fas fa-chevron-left h-5 w-5"></i>
+                                      </button>
+                                      <button aria-current="page" class="z-10 bg-blue-50 border-blue-500 text-blue-600 relative inline-flex items-center px-4 py-2 border text-sm font-medium">
+                                          1
+                                      </button>
+                                      <button class="bg-white border-gray-300 text-gray-500 hover:bg-gray-50 relative inline-flex items-center px-4 py-2 border text-sm font-medium">
+                                          2
+                                      </button>
+                                      <button class="bg-white border-gray-300 text-gray-500 hover:bg-gray-50 relative inline-flex items-center px-4 py-2 border text-sm font-medium">
+                                          3
+                                      </button>
+                                      <button class="relative inline-flex items-center px-2 py-2 rounded-r-md border border-gray-300 bg-white text-sm font-medium text-gray-500 hover:bg-gray-50">
+                                          <span class="sr-only">Siguiente</span>
+                                          <i class="fas fa-chevron-right h-5 w-5"></i>
+                                      </button>
+                                  </nav>
+                              </div>
+                          </div>
+                      </div>
+                  </div>
               </div>
-            </div>
           </div>
         </div>
       </main>
     </div>
+  </div>
+
+  <!-- Modal de Producto -->
+  <div id="product-modal" style="display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background-color: rgba(0,0,0,0.5); z-index: 1000;" 
+       onclick="if(event.target === this) { this.style.display='none'; }">
+      <div style="background: white; margin: 2rem auto; padding: 1.5rem; border-radius: 0.5rem; max-width: 700px; width: 90%; max-height: 90vh; overflow-y: auto; position: relative;">
+          <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 1.5rem; padding-bottom: 1rem; border-bottom: 1px solid #e5e7eb;">
+              <h3 style="font-size: 1.25rem; font-weight: 600; color: #1f2937; display: flex; align-items: center;">
+                  <i class="fas fa-boxes" style="color: #3b82f6; margin-right: 0.5rem;"></i>
+                  Registrar Nuevo Producto
+              </h3>
+              <button type="button" style="color: #6b7280; background: none; border: none; cursor: pointer; font-size: 1.25rem;"
+                      onclick="document.getElementById('product-modal').style.display='none';">
+                  <i class="fas fa-times"></i>
+              </button>
+          </div>
+          
+          <form id="product-form" style="margin-top: 1rem;" onsubmit="handleSubmit(event); return false;">
+              <div style="display: grid; grid-template-columns: 1fr; gap: 1.5rem;">
+                  <!-- Código de barras y Categoría -->
+                  <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 1rem;">
+                      <div>
+                          <label style="display: block; font-size: 0.875rem; font-weight: 500; color: #374151; margin-bottom: 0.5rem;">
+                              Código de Barras <span style="color: #ef4444;">*</span>
+                          </label>
+                          <input type="text" id="codigo_barras" name="codigo_barras" required
+                                 style="width: 100%; padding: 0.5rem 0.75rem; border: 1px solid #d1d5db; border-radius: 0.375rem;"
+                                 placeholder="Código de barras">
+                      </div>
+                      <div>
+                          <label style="display: block; font-size: 0.875rem; font-weight: 500; color: #374151; margin-bottom: 0.5rem;">
+                              Categoría <span style="color: #ef4444;">*</span>
+                          </label>
+                          <select id="categoria" name="categoria" required
+                                  style="width: 100%; padding: 0.5rem 0.75rem; border: 1px solid #d1d5db; border-radius: 0.375rem;">
+                              <option value="">Seleccionar categoría</option>
+                              <option value="Escritura">Escritura</option>
+                              <option value="Escolar">Escolar</option>
+                              <option value="Papel">Papel</option>
+                              <option value="Impresiones">Impresiones</option>
+                              <option value="Fotocopias">Fotocopias</option>
+                              <option value="Otros">Otros</option>
+                          </select>
+                      </div>
+                  </div>
+
+                  <!-- Nombre del producto -->
+                  <div>
+                      <label style="display: block; font-size: 0.875rem; font-weight: 500; color: #374151; margin-bottom: 0.5rem;">
+                          Nombre del Producto <span style="color: #ef4444;">*</span>
+                      </label>
+                      <input type="text" id="nombre" name="nombre" required
+                             style="width: 100%; padding: 0.5rem 0.75rem; border: 1px solid #d1d5db; border-radius: 0.375rem;"
+                             placeholder="Ej. Cuaderno profesional">
+                  </div>
+
+                  <!-- Precios -->
+                  <div style="display: grid; grid-template-columns: repeat(2, 1fr); gap: 1rem;">
+                      <div>
+                          <label style="display: block; font-size: 0.875rem; font-weight: 500; color: #374151; margin-bottom: 0.5rem;">
+                              Precio de Venta <span style="color: #ef4444;">*</span>
+                          </label>
+                          <input type="number" id="precio_venta" name="precio_venta" step="0.01" min="0" required
+                                 style="width: 100%; padding: 0.5rem 0.75rem; border: 1px solid #d1d5db; border-radius: 0.375rem;"
+                                 placeholder="0.00">
+                      </div>
+                      <div>
+                          <label style="display: block; font-size: 0.875rem; font-weight: 500; color: #374151; margin-bottom: 0.5rem;">
+                              Costo Unitario <span style="color: #ef4444;">*</span>
+                          </label>
+                          <input type="number" id="costo_unitario" name="costo_unitario" step="0.01" min="0" required
+                                 style="width: 100%; padding: 0.5rem 0.75rem; border: 1px solid #d1d5db; border-radius: 0.375rem;"
+                                 placeholder="0.00">
+                      </div>
+                  </div>
+
+                  <!-- Inventario -->
+                  <div style="display: grid; grid-template-columns: repeat(3, 1fr); gap: 1rem;">
+                      <div>
+                          <label style="display: block; font-size: 0.875rem; font-weight: 500; color: #374151; margin-bottom: 0.5rem;">
+                              Stock Actual <span style="color: #ef4444;">*</span>
+                          </label>
+                          <input type="number" id="stock_actual" name="stock_actual" min="0" required
+                                 style="width: 100%; padding: 0.5rem 0.75rem; border: 1px solid #d1d5db; border-radius: 0.375rem;"
+                                 value="0">
+                      </div>
+                      <div>
+                          <label style="display: block; font-size: 0.875rem; font-weight: 500; color: #374151; margin-bottom: 0.5rem;">
+                              Stock Mínimo
+                          </label>
+                          <input type="number" id="stock_minimo" name="stock_minimo" min="0"
+                                 style="width: 100%; padding: 0.5rem 0.75rem; border: 1px solid #d1d5db; border-radius: 0.375rem;"
+                                 value="5">
+                      </div>
+                      <div>
+                          <label style="display: block; font-size: 0.875rem; font-weight: 500; color: #374151; margin-bottom: 0.5rem;">
+                              Unidad de Medida
+                          </label>
+                          <select id="unidad_medida" name="unidad_medida"
+                                  style="width: 100%; padding: 0.5rem 0.75rem; border: 1px solid #d1d5db; border-radius: 0.375rem;">
+                              <option value="Pieza" selected>Pieza</option>
+                              <option value="Paquete">Paquete</option>
+                              <option value="Caja">Caja</option>
+                          </select>
+                      </div>
+                  </div>
+                  
+                  <!-- Botones -->
+                  <div style="display: flex; justify-content: flex-end; gap: 1rem; margin-top: 1rem; padding-top: 1rem; border-top: 1px solid #e5e5e5;">
+                      <button type="button" 
+                              style="padding: 0.5rem 1rem; border: 1px solid #d1d5db; border-radius: 0.375rem; background: white; color: #374151; cursor: pointer;"
+                              onclick="document.getElementById('product-modal').style.display='none';">
+                          Cancelar
+                      </button>
+                      <button type="submit" 
+                              style="padding: 0.5rem 1rem; border-radius: 0.375rem; background: #3b82f6; color: white; border: none; cursor: pointer;"
+                              id="btn-guardar">
+                          Guardar Producto
+                      </button>
+                  </div>
+              </div>
+          </form>
+      </div>
   </div>
 
   <!-- Scripts -->
@@ -369,7 +673,7 @@
         if (data.success && data.data.length > 0) {
           data.data.forEach(producto => {
             const card = document.createElement('div');
-            card.className = 'bg-white rounded-lg shadow-md p-4 hover:shadow-lg transition-shadow cursor-pointer';
+            card.className = 'bg-white rounded-xl shadow-sm p-4 hover:shadow-md transition-shadow cursor-pointer border border-gray-100';
             card.onclick = () => addToCart(producto);
 
             card.innerHTML = `
@@ -389,11 +693,11 @@
             grid.appendChild(card);
           });
         } else {
-          grid.innerHTML = '<div class="col-span-full text-center py-8 text-gray-500">No hay productos disponibles</div>';
+          grid.innerHTML = '<div class="flex items-center justify-center h-64 bg-white rounded-xl shadow-sm"><p class="text-gray-400">No hay productos disponibles</p></div>';
         }
       } catch (error) {
         console.error('Error loading products:', error);
-        document.getElementById('products-grid').innerHTML = '<div class="col-span-full text-center py-8 text-red-500">Error al cargar productos</div>';
+        document.getElementById('products-grid').innerHTML = '<div class="flex items-center justify-center h-64 bg-white rounded-xl shadow-sm"><p class="text-red-400">Error al cargar productos</p></div>';
       }
     }
 
@@ -407,22 +711,47 @@
         tbody.innerHTML = '';
 
         if (data.success && data.data.length > 0) {
+          // Actualizar estadísticas
+          const totalProductos = data.data.length;
+          const enStock = data.data.filter(p => p.stock_actual > 0).length;
+          const bajoStock = data.data.filter(p => p.stock_actual > 0 && p.stock_actual <= (p.stock_minimo || 5)).length;
+          const agotados = data.data.filter(p => p.stock_actual === 0).length;
+
+          document.getElementById('total-productos-stat').textContent = totalProductos;
+          document.getElementById('en-stock-stat').textContent = enStock;
+          document.getElementById('bajo-stock-stat').textContent = bajoStock;
+          document.getElementById('agotados-stat').textContent = agotados;
+          document.getElementById('total-productos-pagination').textContent = totalProductos;
+
           data.data.forEach(producto => {
             const row = document.createElement('tr');
             row.className = 'hover:bg-gray-50';
 
+            // Determinar estado del stock
+            let stockStatus = '';
+            if (producto.stock_actual === 0) {
+              stockStatus = '<span class="px-2 inline-flex text-xs leading-5 font-semibold rounded-full bg-red-100 text-red-800">Agotado</span>';
+            } else if (producto.stock_actual <= (producto.stock_minimo || 5)) {
+              stockStatus = '<span class="px-2 inline-flex text-xs leading-5 font-semibold rounded-full bg-yellow-100 text-yellow-800">Bajo Stock</span>';
+            } else {
+              stockStatus = '<span class="px-2 inline-flex text-xs leading-5 font-semibold rounded-full bg-green-100 text-green-800">En Stock</span>';
+            }
+
             row.innerHTML = `
               <td class="px-6 py-4 whitespace-nowrap">
                 <div class="text-sm font-medium text-gray-900">${producto.nombre}</div>
-                <div class="text-sm text-gray-500">${producto.codigo_barras}</div>
+                <div class="text-sm text-gray-500">${producto.codigo_barras || 'N/A'}</div>
               </td>
               <td class="px-6 py-4 whitespace-nowrap">
-                <span class="px-2 inline-flex text-xs leading-5 font-semibold rounded-full bg-green-100 text-green-800">
+                <span class="px-2 inline-flex text-xs leading-5 font-semibold rounded-full bg-blue-100 text-blue-800">
                   ${producto.categoria}
                 </span>
               </td>
               <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
-                ${producto.stock_actual} ${producto.unidad_medida}
+                <div class="flex items-center">
+                  <span class="mr-2">${producto.stock_actual} ${producto.unidad_medida || 'pcs'}</span>
+                  ${stockStatus}
+                </div>
               </td>
               <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
                 $${parseFloat(producto.precio_venta).toFixed(2)}
@@ -441,6 +770,11 @@
           });
         } else {
           tbody.innerHTML = '<tr><td colspan="5" class="px-6 py-4 text-center text-gray-500">No hay productos registrados</td></tr>';
+          // Reset stats
+          document.getElementById('total-productos-stat').textContent = '0';
+          document.getElementById('en-stock-stat').textContent = '0';
+          document.getElementById('bajo-stock-stat').textContent = '0';
+          document.getElementById('agotados-stat').textContent = '0';
         }
       } catch (error) {
         console.error('Error loading products table:', error);
@@ -476,11 +810,13 @@
 
     function updateCartDisplay() {
       const cartItems = document.getElementById('cart-items');
+      const checkoutBtn = document.getElementById('checkout-btn');
+      
       cartItems.innerHTML = '';
 
       if (state.cart.length === 0) {
         cartItems.innerHTML = `
-          <div class="text-center text-gray-500 py-8">
+          <div class="text-center py-8 text-gray-400">
             <i class="fas fa-shopping-cart text-3xl mb-2"></i>
             <p>El carrito está vacío</p>
           </div>
@@ -488,6 +824,7 @@
         document.getElementById('subtotal').textContent = '$0.00';
         document.getElementById('iva').textContent = '$0.00';
         document.getElementById('total').textContent = '$0.00';
+        checkoutBtn.disabled = true;
         return;
       }
 
@@ -498,20 +835,22 @@
         subtotal += itemTotal;
 
         const cartItem = document.createElement('div');
-        cartItem.className = 'flex items-center justify-between p-3 border-b';
+        cartItem.className = 'cart-item flex justify-between items-start py-3 border-b border-gray-100';
         cartItem.innerHTML = `
           <div class="flex-1">
-            <h4 class="font-medium text-sm">${item.nombre}</h4>
-            <p class="text-xs text-gray-500">$${parseFloat(item.precio_venta).toFixed(2)} c/u</p>
+            <h4 class="font-medium text-gray-800">${item.nombre}</h4>
+            <div class="flex items-center mt-1">
+              <button onclick="changeQuantity(${index}, -1)" class="quantity-btn px-2 py-1 bg-gray-100 rounded hover:bg-gray-200">-</button>
+              <span class="quantity-input w-12 text-center mx-2 border rounded px-2 py-1">${item.cantidad}</span>
+              <button onclick="changeQuantity(${index}, 1)" class="quantity-btn px-2 py-1 bg-gray-100 rounded hover:bg-gray-200">+</button>
+              <span class="text-sm text-gray-500 ml-2">x $${parseFloat(item.precio_venta).toFixed(2)}</span>
+            </div>
           </div>
-          <div class="flex items-center space-x-2">
-            <button onclick="changeQuantity(${index}, -1)" class="w-6 h-6 rounded-full bg-gray-200 flex items-center justify-center text-xs">-</button>
-            <span class="w-8 text-center text-sm">${item.cantidad}</span>
-            <button onclick="changeQuantity(${index}, 1)" class="w-6 h-6 rounded-full bg-gray-200 flex items-center justify-center text-xs">+</button>
-            <button onclick="removeFromCart(${index})" class="w-6 h-6 rounded-full bg-red-200 flex items-center justify-center text-xs text-red-600">×</button>
-          </div>
-          <div class="w-16 text-right text-sm font-medium">
-            $${itemTotal.toFixed(2)}
+          <div class="text-right">
+            <span class="font-medium">$${itemTotal.toFixed(2)}</span>
+            <button onclick="removeFromCart(${index})" class="remove-item ml-2 text-red-500 hover:text-red-700">
+              <i class="fas fa-times"></i>
+            </button>
           </div>
         `;
         cartItems.appendChild(cartItem);
@@ -523,6 +862,7 @@
       document.getElementById('subtotal').textContent = `$${subtotal.toFixed(2)}`;
       document.getElementById('iva').textContent = `$${iva.toFixed(2)}`;
       document.getElementById('total').textContent = `$${total.toFixed(2)}`;
+      checkoutBtn.disabled = false;
     }
 
     function changeQuantity(index, change) {
@@ -611,6 +951,56 @@
           console.error('Error al eliminar producto:', error);
           alert('Error al eliminar el producto');
         });
+      }
+    }
+
+    // Función para limpiar carrito
+    function clearCart() {
+      if (state.cart.length > 0 && confirm('¿Estás seguro de que deseas limpiar el carrito?')) {
+        state.cart = [];
+        updateCartDisplay();
+      }
+    }
+
+    // Función para manejar el formulario de nuevo producto
+    async function handleSubmit(event) {
+      event.preventDefault();
+      
+      const formData = new FormData(document.getElementById('product-form'));
+      const productData = {
+        codigo_barras: formData.get('codigo_barras'),
+        categoria: formData.get('categoria'),
+        nombre: formData.get('nombre'),
+        precio_venta: parseFloat(formData.get('precio_venta')),
+        costo_unitario: parseFloat(formData.get('costo_unitario')),
+        stock_actual: parseInt(formData.get('stock_actual')),
+        stock_minimo: parseInt(formData.get('stock_minimo')) || 5,
+        unidad_medida: formData.get('unidad_medida')
+      };
+
+      try {
+        const response = await fetch(`${API_BASE_URL}/productos`, {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json'
+          },
+          body: JSON.stringify(productData)
+        });
+
+        if (response.ok) {
+          alert('Producto guardado exitosamente');
+          document.getElementById('product-modal').style.display = 'none';
+          document.getElementById('product-form').reset();
+          if (state.currentSection === 'productos') {
+            loadProductsTable();
+          }
+        } else {
+          const error = await response.json();
+          alert('Error al guardar producto: ' + (error.message || 'Error desconocido'));
+        }
+      } catch (error) {
+        console.error('Error al guardar producto:', error);
+        alert('Error al guardar el producto');
       }
     }
 
