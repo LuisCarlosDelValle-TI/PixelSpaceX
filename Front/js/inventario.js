@@ -12,7 +12,7 @@ function getApiBaseUrl() {
     return `${window.location.protocol}//${window.location.host}/api`;
 }
 
-const API_BASE_URL = getApiBaseUrl();
+const API_BASE_URL = (window.CONFIG && window.CONFIG.apiBaseUrl) ? window.CONFIG.apiBaseUrl : getApiBaseUrl();
 console.log('🌐 [INVENTARIO] API Base URL:', API_BASE_URL);
 
 // Función para eliminar producto

@@ -14,8 +14,8 @@ function getApiBaseUrl() {
     return `${window.location.protocol}//${window.location.host}/api`;
 }
 
-// Usar configuración global
-const API_BASE_URL = window.CONFIG ? window.CONFIG.apiBaseUrl : getApiBaseUrl();
+// Usar configuración global o fallback
+const API_BASE_URL = (window.CONFIG && window.CONFIG.apiBaseUrl) ? window.CONFIG.apiBaseUrl : getApiBaseUrl();
 
 // Función para inicializar el dashboard
 async function initializeDashboard() {

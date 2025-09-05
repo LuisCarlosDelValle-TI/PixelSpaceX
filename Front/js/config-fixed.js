@@ -13,7 +13,8 @@
             return 'http://localhost:3001/api';
         }
         
-        return window.location.protocol + '//' + window.location.host + '/api';
+        // Para producción (Render, etc.)
+        return window.location.origin + '/api';
     }
     
     // Configuración global

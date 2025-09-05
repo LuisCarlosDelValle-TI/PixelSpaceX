@@ -47,7 +47,7 @@ async function loadSection(section) {
 
         if (section === 'dashboard') {
             // Cargar el dashboard
-            const response = await fetch('/Front/views/dashboard.html');
+            const response = await fetch('../views/dashboard.html');
             const html = await response.text();
             mainContent.innerHTML = html;
             document.title = 'Panel de Control | Papelería Luis';
@@ -81,13 +81,13 @@ async function loadSection(section) {
         } 
         else if (section === 'ventas') {
             // Cargar la sección de ventas
-            const response = await fetch('/Front/views/ventas.html');
+            const response = await fetch('../views/ventas.html');
             const html = await response.text();
             mainContent.innerHTML = html;
             
             // Cargar el script de ventas y forzar ejecución inmediata
             const script = document.createElement('script');
-            script.src = '/Front/js/ventas.js';
+            script.src = '../js/ventas.js';
             
             script.onload = () => {
                 console.log('Script de ventas cargado');
@@ -162,14 +162,14 @@ async function loadSection(section) {
         }
         else if (section === 'productos') {
             // Cargar la sección de productos
-            const response = await fetch('/Front/views/inventario.html');
+            const response = await fetch('../views/inventario.html');
             const html = await response.text();
             mainContent.innerHTML = html;
             document.title = 'Gestión de Productos | Papelería Luis';
             
             // Cargar el script de inventario primero
             const inventarioScript = document.createElement('script');
-            inventarioScript.src = '/Front/js/inventario.js';
+            inventarioScript.src = '../js/inventario.js';
             inventarioScript.onload = () => {
                 console.log('✅ Script de inventario cargado');
                 
@@ -283,7 +283,7 @@ async function loadSection(section) {
         }
         else if (section === 'reportes') {
             // Cargar la sección de reportes
-            const response = await fetch('/Front/views/reportes.html');
+            const response = await fetch('../views/reportes.html');
             const html = await response.text();
             mainContent.innerHTML = html;
             document.title = 'Reportes | Papelería Luis';
