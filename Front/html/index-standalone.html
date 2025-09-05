@@ -577,8 +577,10 @@
         loadDashboard();
       } else if (section === 'ventas') {
         loadProducts();
+        loadCategories(); // Cargar categorías para el filtro
       } else if (section === 'productos') {
         loadProductsTable();
+        loadCategories(); // Cargar categorías para el formulario
       }
     }
 
@@ -606,6 +608,42 @@
         document.getElementById('productos-total').textContent = '23';
         document.getElementById('clientes-total').textContent = '250';
         loadCharts();
+      }
+    }
+
+    // Cargar categorías dinámicamente
+    async function loadCategories() {
+      try {
+        const response = await fetch(`${API_BASE_URL}/productos/categorias`);
+        const data = await response.json();
+
+        if (data.success && data.data.length > 0) {
+          // Actualizar select de ventas
+          const categoryFilter = document.getElementById('category-filter');
+          if (categoryFilter) {
+            categoryFilter.innerHTML = '<option value="">Todas las categorías</option>';
+            data.data.forEach(categoria => {
+              const option = document.createElement('option');
+              option.value = categoria;
+              option.textContent = categoria;
+              categoryFilter.appendChild(option);
+            });
+          }
+
+          // Actualizar select del modal de productos
+          const categoriaSelect = document.getElementById('categoria');
+          if (categoriaSelect) {
+            categoriaSelect.innerHTML = '<option value="">Seleccionar categoría</option>';
+            data.data.forEach(categoria => {
+              const option = document.createElement('option');
+              option.value = categoria;
+              option.textContent = categoria;
+              categoriaSelect.appendChild(option);
+            });
+          }
+        }
+      } catch (error) {
+        console.error('Error loading categories:', error);
       }
     }
 
@@ -664,13 +702,19 @@
     // Productos para ventas
     async function loadProducts() {
       try {
+        console.log('🔄 Cargando productos para ventas...');
         const response = await fetch(`${API_BASE_URL}/productos`);
+        console.log('📡 Response status:', response.status);
+        
         const data = await response.json();
+        console.log('📦 Data received:', data);
 
         const grid = document.getElementById('products-grid');
         grid.innerHTML = '';
 
-        if (data.success && data.data.length > 0) {
+        if (data.success && data.data && data.data.length > 0) {
+          console.log(`✅ ${data.data.length} productos encontrados`);
+          
           data.data.forEach(producto => {
             const card = document.createElement('div');
             card.className = 'bg-white rounded-xl shadow-sm p-4 hover:shadow-md transition-shadow cursor-pointer border border-gray-100';
@@ -682,10 +726,10 @@
                   <i class="fas fa-box text-blue-500 text-xl"></i>
                 </div>
                 <h3 class="font-medium text-gray-900 text-sm mb-1">${producto.nombre}</h3>
-                <p class="text-xs text-gray-500 mb-2">${producto.categoria}</p>
+                <p class="text-xs text-gray-500 mb-2">${producto.categoria || 'Sin categoría'}</p>
                 <div class="space-y-1">
-                  <p class="text-lg font-bold text-green-600">$${parseFloat(producto.precio_venta).toFixed(2)}</p>
-                  <p class="text-xs text-gray-400">Stock: ${producto.stock_actual}</p>
+                  <p class="text-lg font-bold text-green-600">$${parseFloat(producto.precio_venta || 0).toFixed(2)}</p>
+                  <p class="text-xs text-gray-400">Stock: ${producto.stock_actual || 0}</p>
                 </div>
               </div>
             `;
@@ -693,10 +737,11 @@
             grid.appendChild(card);
           });
         } else {
+          console.log('⚠️ No se encontraron productos');
           grid.innerHTML = '<div class="flex items-center justify-center h-64 bg-white rounded-xl shadow-sm"><p class="text-gray-400">No hay productos disponibles</p></div>';
         }
       } catch (error) {
-        console.error('Error loading products:', error);
+        console.error('❌ Error loading products:', error);
         document.getElementById('products-grid').innerHTML = '<div class="flex items-center justify-center h-64 bg-white rounded-xl shadow-sm"><p class="text-red-400">Error al cargar productos</p></div>';
       }
     }
@@ -704,18 +749,24 @@
     // Tabla de productos
     async function loadProductsTable() {
       try {
+        console.log('🔄 Cargando tabla de productos...');
         const response = await fetch(`${API_BASE_URL}/productos`);
+        console.log('📡 Response status:', response.status);
+        
         const data = await response.json();
+        console.log('📦 Data received:', data);
 
         const tbody = document.getElementById('productos-table');
         tbody.innerHTML = '';
 
-        if (data.success && data.data.length > 0) {
+        if (data.success && data.data && data.data.length > 0) {
+          console.log(`✅ ${data.data.length} productos encontrados para tabla`);
+          
           // Actualizar estadísticas
           const totalProductos = data.data.length;
-          const enStock = data.data.filter(p => p.stock_actual > 0).length;
-          const bajoStock = data.data.filter(p => p.stock_actual > 0 && p.stock_actual <= (p.stock_minimo || 5)).length;
-          const agotados = data.data.filter(p => p.stock_actual === 0).length;
+          const enStock = data.data.filter(p => (p.stock_actual || 0) > 0).length;
+          const bajoStock = data.data.filter(p => (p.stock_actual || 0) > 0 && (p.stock_actual || 0) <= (p.stock_minimo || 5)).length;
+          const agotados = data.data.filter(p => (p.stock_actual || 0) === 0).length;
 
           document.getElementById('total-productos-stat').textContent = totalProductos;
           document.getElementById('en-stock-stat').textContent = enStock;
@@ -729,9 +780,12 @@
 
             // Determinar estado del stock
             let stockStatus = '';
-            if (producto.stock_actual === 0) {
+            const stockActual = producto.stock_actual || 0;
+            const stockMinimo = producto.stock_minimo || 5;
+            
+            if (stockActual === 0) {
               stockStatus = '<span class="px-2 inline-flex text-xs leading-5 font-semibold rounded-full bg-red-100 text-red-800">Agotado</span>';
-            } else if (producto.stock_actual <= (producto.stock_minimo || 5)) {
+            } else if (stockActual <= stockMinimo) {
               stockStatus = '<span class="px-2 inline-flex text-xs leading-5 font-semibold rounded-full bg-yellow-100 text-yellow-800">Bajo Stock</span>';
             } else {
               stockStatus = '<span class="px-2 inline-flex text-xs leading-5 font-semibold rounded-full bg-green-100 text-green-800">En Stock</span>';
@@ -739,22 +793,22 @@
 
             row.innerHTML = `
               <td class="px-6 py-4 whitespace-nowrap">
-                <div class="text-sm font-medium text-gray-900">${producto.nombre}</div>
-                <div class="text-sm text-gray-500">${producto.codigo_barras || 'N/A'}</div>
+                <div class="text-sm font-medium text-gray-900">${producto.nombre || 'Sin nombre'}</div>
+                <div class="text-sm text-gray-500">${producto.codigo_barras || 'Sin código'}</div>
               </td>
               <td class="px-6 py-4 whitespace-nowrap">
                 <span class="px-2 inline-flex text-xs leading-5 font-semibold rounded-full bg-blue-100 text-blue-800">
-                  ${producto.categoria}
+                  ${producto.categoria || 'Sin categoría'}
                 </span>
               </td>
               <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
                 <div class="flex items-center">
-                  <span class="mr-2">${producto.stock_actual} ${producto.unidad_medida || 'pcs'}</span>
+                  <span class="mr-2">${stockActual} ${producto.unidad_medida || 'pcs'}</span>
                   ${stockStatus}
                 </div>
               </td>
               <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
-                $${parseFloat(producto.precio_venta).toFixed(2)}
+                $${parseFloat(producto.precio_venta || 0).toFixed(2)}
               </td>
               <td class="px-6 py-4 whitespace-nowrap text-right text-sm font-medium">
                 <button onclick="editProduct(${producto.id_producto})" class="text-indigo-600 hover:text-indigo-900 mr-3" title="Editar">
@@ -769,6 +823,7 @@
             tbody.appendChild(row);
           });
         } else {
+          console.log('⚠️ No se encontraron productos para tabla');
           tbody.innerHTML = '<tr><td colspan="5" class="px-6 py-4 text-center text-gray-500">No hay productos registrados</td></tr>';
           // Reset stats
           document.getElementById('total-productos-stat').textContent = '0';
@@ -777,7 +832,7 @@
           document.getElementById('agotados-stat').textContent = '0';
         }
       } catch (error) {
-        console.error('Error loading products table:', error);
+        console.error('❌ Error loading products table:', error);
         document.getElementById('productos-table').innerHTML = '<tr><td colspan="5" class="px-6 py-4 text-center text-red-500">Error al cargar productos</td></tr>';
       }
     }

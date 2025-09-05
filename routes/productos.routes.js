@@ -12,29 +12,22 @@ router.get('/', async (req, res) => {
             FROM Productos p 
             WHERE p.activo = 1 
             ORDER BY p.nombre
-            LIMIT ? OFFSET ?
         `;
         
-        const limit = parseInt(req.query.limit) || 10;
-        const page = parseInt(req.query.page) || 1;
-        const offset = (page - 1) * limit;
-
-        const rows = await dbAll(sql, [limit, offset]);
-        const total = rows.length > 0 ? rows[0].total : 0;
-        const totalPages = Math.ceil(total / limit);
+        const rows = await dbAll(sql);
         
         res.json({
+            success: true,
             data: rows,
-            pagination: {
-                total,
-                totalPages,
-                currentPage: page,
-                perPage: limit
-            }
+            total: rows.length
         });
     } catch (err) {
         console.error('Error al obtener productos:', err);
-        res.status(500).json({ error: 'Error al obtener los productos', details: err.message });
+        res.status(500).json({ 
+            success: false,
+            error: 'Error al obtener los productos', 
+            details: err.message 
+        });
     }
 });
 
@@ -239,6 +232,61 @@ router.delete('/:id', async (req, res) => {
         console.error('Error al eliminar el producto:', err);
         res.status(500).json({ 
             error: 'Error al eliminar el producto',
+            details: err.message 
+        });
+    }
+});
+
+// Obtener categorías existentes
+router.get('/categorias', async (req, res) => {
+    try {
+        const sql = `
+            SELECT DISTINCT categoria 
+            FROM Productos 
+            WHERE activo = 1 AND categoria IS NOT NULL AND categoria != ''
+            ORDER BY categoria
+        `;
+        
+        const rows = await dbAll(sql);
+        const categorias = rows.map(row => row.categoria);
+        
+        res.json({
+            success: true,
+            data: categorias
+        });
+    } catch (err) {
+        console.error('Error al obtener categorías:', err);
+        res.status(500).json({ 
+            success: false,
+            error: 'Error al obtener las categorías', 
+            details: err.message 
+        });
+    }
+});
+
+// Debug: Ver estructura de la tabla
+router.get('/debug', async (req, res) => {
+    try {
+        // Obtener información de la tabla
+        const tableInfo = await dbAll("PRAGMA table_info(Productos)");
+        
+        // Obtener algunos productos de ejemplo
+        const sampleProducts = await dbAll("SELECT * FROM Productos LIMIT 5");
+        
+        // Contar total de productos
+        const totalCount = await dbGet("SELECT COUNT(*) as count FROM Productos");
+        
+        res.json({
+            success: true,
+            tableStructure: tableInfo,
+            sampleProducts: sampleProducts,
+            totalProducts: totalCount.count
+        });
+    } catch (err) {
+        console.error('Error en debug:', err);
+        res.status(500).json({ 
+            success: false,
+            error: 'Error en debug', 
             details: err.message 
         });
     }
